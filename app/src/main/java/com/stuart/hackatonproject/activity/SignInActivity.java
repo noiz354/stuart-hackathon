@@ -50,15 +50,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        setUpGoogleApiClient();
 
         View buttonSignIn = findViewById(R.id.btn_google_sign_in);
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +60,17 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
+    }
+
+    private void setUpGoogleApiClient() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
     }
 
     @Override

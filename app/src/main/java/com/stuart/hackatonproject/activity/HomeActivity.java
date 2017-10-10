@@ -19,9 +19,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.activity.base.BaseActivity;
 import com.stuart.hackatonproject.helper.LoginHelper;
 
-public class HomeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -43,18 +44,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // [START config_signin]
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        // [END config_signin]
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        setUpGoogleApiClient();
 
         View buttonSignOut = findViewById(R.id.btn_google_sign_out);
         buttonSignOut.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +69,17 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         setUpToolbar();
 
         Toast.makeText(this, "User login: " + LoginHelper.getAuth().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+    }
+
+    private void setUpGoogleApiClient() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
     }
 
     private void setUpToolbar() {
