@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#1565c0</color>
+    <color name="colorPrimaryDark">#0d47a1</color>
+    <color name="colorAccent">#ffd740</color>
+    <color name="colorAccentDark">@color/colorPrimaryDark</color>
+
+    <!--
+    90% — E6
+    80% — CC
+    85% — D9
+    70% — B3
+    60% — 99
+    50% — 80
+    40% — 66
+    30% — 4D
+    20% — 33
+    10% — 1A
+    -->
+
+    <color name="hkWhite">#ffffff</color>
+    <color name="hkBlack">@color/gray_solid_700</color>
+    <color name="hkBlue">#428bca</color>
+    <color name="hkLightBlue">#40c4ff</color>
+    <color name="hkTransDarkGreen">#4D26a69a</color>
+    <color name="hkTransLightBlue">#1A428bca</color>
+    <color name="hkDarkGreen">#26a69a</color>
+    <color name="hkOrange">#ff7043</color>
+
+    <color name="primary_text_color">@color/black_trans_70</color>
+    <color name="separator">@color/gray_solid_400</color>
+
+    <!-- palette -->
+    <color name="gray_solid_800">#424242</color>
+    <color name="gray_solid_700">#616161</color>
+    <color name="gray_solid_500">#9E9E9E</color>
+    <color name="gray_solid_400">#BDBDBD</color>
+    <color name="gray_solid_300">#E0E0E0</color>
+    <color name="gray_solid_100">#F5F5F5</color>
+
+    <color name="gray_trans_10">#1A9E9E9E</color>
+
+    <color name="black_trans_70">#B3000000</color>
+    <color name="black_trans_85">#D9000000</color>
 </resources>
