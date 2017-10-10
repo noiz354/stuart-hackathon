@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "706307912836",
+    "firebase_url": "https://stuart-hackaton.firebaseio.com",
+    "project_id": "stuart-hackaton",
+    "storage_bucket": "stuart-hackaton.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:706307912836:android:4b87a037f550e602",
+        "android_client_info": {
+          "package_name": "com.stuart.hackatonproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "706307912836-dm1iiealbcvi1vi0qkks7igk3vm96nm5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stuart.hackatonproject",
+            "certificate_hash": "cc5bae5667f88f7a8fa7a5d656f68e117cd79371"
+          }
+        },
+        {
+          "client_id": "706307912836-3nvah07da8gpoidegvdrikm97p5n9lhl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stuart.hackatonproject",
+            "certificate_hash": "926689a8602c9277d18566e1f5ae7b40fe662ec2"
+          }
+        },
+        {
+          "client_id": "706307912836-qflfis594n3d11gmmn1bal7m2sbhn695.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWa2_oLPpdfsriXatNOm6svryUqH1mJWM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "706307912836-qflfis594n3d11gmmn1bal7m2sbhn695.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
