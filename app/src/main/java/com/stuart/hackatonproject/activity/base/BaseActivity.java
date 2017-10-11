@@ -3,6 +3,7 @@ package com.stuart.hackatonproject.activity.base;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.stuart.hackatonproject.R;
@@ -25,6 +27,24 @@ public class BaseActivity extends AppCompatActivity {
 
     @VisibleForTesting
     public ProgressDialog mProgressDialog;
+
+    @CallSuper
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setUpToolbar();
+    }
+
+    protected void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(getTitle());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -67,22 +87,13 @@ public class BaseActivity extends AppCompatActivity {
                 setUpTitleByTag(null); // set default
             } else { //2 or more
                 setUpTitleByTag(getSupportFragmentManager()
-                        .getBackStackEntryAt(backStackCount-2)
+                        .getBackStackEntryAt(backStackCount - 2)
                         .getName());
             }
             getSupportFragmentManager().popBackStack();
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
-    }
-
-    @CallSuper
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -98,27 +109,25 @@ public class BaseActivity extends AppCompatActivity {
     public void replaceFragment(Fragment fragment, boolean addToBackstack, String tag) {
         if (!addToBackstack) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment, tag).commit();
-        }
-        else {
+        } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment, tag).addToBackStack(tag).commit();
         }
-        setUpTitleByTag (tag);
+        setUpTitleByTag(tag);
     }
 
     public void replaceAndHideOldFragment(Fragment fragment, boolean addToBackstack, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction ft= fragmentManager.beginTransaction();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment currentVisibileFragment = getCurrentVisibleFragment(fragmentManager);
-        if (currentVisibileFragment!= null) {
+        if (currentVisibileFragment != null) {
             ft.hide(currentVisibileFragment);
         }
         if (!addToBackstack) {
             ft.add(R.id.fragment, fragment, tag).show(fragment).commit();
-        }
-        else {
+        } else {
             ft.add(R.id.fragment, fragment, tag).addToBackStack(tag).show(fragment).commit();
         }
-        setUpTitleByTag (tag);
+        setUpTitleByTag(tag);
     }
 
     public boolean showFragment(String tag) {
@@ -127,30 +136,30 @@ public class BaseActivity extends AppCompatActivity {
             return false;
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction ft= fragmentManager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
             Fragment currentVisibileFragment = getCurrentVisibleFragment(fragmentManager);
-            if (currentVisibileFragment!= null) {
+            if (currentVisibileFragment != null) {
                 ft.hide(currentVisibileFragment);
             }
             ft.show(f).commit();
-            setUpTitleByTag (tag);
+            setUpTitleByTag(tag);
             return true;
         }
     }
 
     // assume only 1 fragment visible
-    private Fragment getCurrentVisibleFragment(FragmentManager fragmentManager){
+    private Fragment getCurrentVisibleFragment(FragmentManager fragmentManager) {
         List<Fragment> fragmentList = fragmentManager.getFragments();
-        for (int i =0, sizei = fragmentList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = fragmentList.size(); i < sizei; i++) {
             Fragment f = fragmentList.get(i);
-            if (f!= null && f.isVisible()) {
+            if (f != null && f.isVisible()) {
                 return f;
             }
         }
         return null;
     }
 
-    protected void setUpTitleByTag(String tag){
+    protected void setUpTitleByTag(String tag) {
         // no operation
     }
 
