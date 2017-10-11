@@ -5,4 +5,9 @@
     <string name="loading">Loading</string>
     <string name="google_sign_out">Sign Out</string>
     <string name="label_add">Add</string>
+    <string name="label_image">Image</string>
+    <string name="label_video">Video</string>
+    <string name="label_title">Title</string>
+    <string name="label_description">Description</string>
+    <string name="label_reminder_time">Reminder Time</string>
 </resources>
