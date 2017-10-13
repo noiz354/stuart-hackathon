@@ -19,9 +19,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
 import com.stuart.hackatonproject.helper.LoginHelper;
+import com.stuart.hackatonproject.model.UserDatabase;
 
 /**
  * Created by User on 10/10/2017.
@@ -96,6 +99,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             onSuccessLoginGoogle();
+                            updateUserDatabase();
                         } else {
                             onErrorLoginGoogle();
                         }
@@ -104,12 +108,19 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
 
-    private void onSuccessLoginGoogle(){
+    private void onSuccessLoginGoogle() {
         hideProgressDialog();
         HomeActivity.start(SignInActivity.this);
     }
 
-    private void onErrorLoginGoogle(){
+    private void updateUserDatabase() {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        UserDatabase user = new UserDatabase(LoginHelper.getAuth().getCurrentUser().getDisplayName(), LoginHelper.getAuth().getCurrentUser().getEmail());
+        mDatabase.child(String.valueOf(LoginHelper.getAuth().getCurrentUser().getEmail().hashCode())).setValue(user);
+
+    }
+
+    private void onErrorLoginGoogle() {
         hideProgressDialog();
         Toast.makeText(SignInActivity.this, "Authentication failed.",
                 Toast.LENGTH_SHORT).show();
