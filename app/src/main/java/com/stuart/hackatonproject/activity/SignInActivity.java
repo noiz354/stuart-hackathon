@@ -19,12 +19,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
 import com.stuart.hackatonproject.helper.LoginHelper;
-import com.stuart.hackatonproject.model.UserDatabase;
+import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
+import com.stuart.hackatonproject.util.FirebaseUtils;
 
 /**
  * Created by User on 10/10/2017.
@@ -98,7 +103,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            onSuccessLoginGoogle();
                             updateUserDatabase();
                         } else {
                             onErrorLoginGoogle();
@@ -114,10 +118,24 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void updateUserDatabase() {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
-        UserDatabase user = new UserDatabase(LoginHelper.getAuth().getCurrentUser().getDisplayName(), LoginHelper.getAuth().getCurrentUser().getEmail());
-        mDatabase.child(String.valueOf(LoginHelper.getAuth().getCurrentUser().getEmail().hashCode())).setValue(user);
+        Query query = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild(FirebaseUtils.getCurrentUniqueUserId())) {
+                    UserDB user = new UserDB();
+                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getDisplayName());
+                    user.setName(LoginHelper.getAuth().getCurrentUser().getEmail());
+                    user.save();
+                }
+                onSuccessLoginGoogle();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO clear cache, logout
+            }
+        });
     }
 
     private void onErrorLoginGoogle() {
