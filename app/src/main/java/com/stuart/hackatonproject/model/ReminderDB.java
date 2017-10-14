@@ -21,7 +21,7 @@ public class ReminderDB {
     private String fromUserId;
     private String toUserId;
     private String title;
-    private String description;
+    private String content;
     private long createdAt;
     private long notifyAt;
     private String uniqueId;
@@ -54,12 +54,12 @@ public class ReminderDB {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public long getCreatedAt() {

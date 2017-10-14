@@ -14,8 +14,6 @@ import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class DetailReminderFragment extends Fragment {
     }
 
     private TextView titleTextView;
-    private TextView descriptionTextView;
+    private TextView contentTextView;
     private TextView reminderAtTextView;
 
 
@@ -38,7 +36,7 @@ public class DetailReminderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reminder_detail, container, false);
         titleTextView = view.findViewById(R.id.edit_text_title);
-        descriptionTextView = view.findViewById(R.id.edit_text_description);
+        contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
         return view;
     }
@@ -51,7 +49,7 @@ public class DetailReminderFragment extends Fragment {
 
     private void saveData(){
         String title = titleTextView.getText().toString();
-        String description = descriptionTextView.getText().toString();
+        String description = contentTextView.getText().toString();
         if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description)) {
             return;
         }
@@ -62,7 +60,7 @@ public class DetailReminderFragment extends Fragment {
             reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
             reminderDB.setToUserId(toUser);
             reminderDB.setTitle(title);
-            reminderDB.setDescription(description);
+            reminderDB.setContent(description);
             reminderDB.setCreatedAt(System.currentTimeMillis() + 10000000);
             reminderDB.save();
         }
