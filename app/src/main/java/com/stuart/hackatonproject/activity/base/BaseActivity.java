@@ -3,8 +3,8 @@ package com.stuart.hackatonproject.activity.base;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
@@ -13,9 +13,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.constant.ColorTypeDef;
+import com.stuart.hackatonproject.constant.Constant;
 
 import java.util.List;
 
@@ -35,6 +41,7 @@ public class BaseActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setUpToolbar();
+        setUpAppTheme();
     }
 
     protected void setUpToolbar() {
@@ -43,6 +50,39 @@ public class BaseActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void setUpAppTheme() {
+        final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        if (TextUtils.isEmpty(firebaseRemoteConfig.getString(Constant.REMOTE_CONFIG_APP_COLOR_THEME))) {
+            return;
+        }
+        @ColorTypeDef int colorTheme = Integer.valueOf(firebaseRemoteConfig.getString(Constant.REMOTE_CONFIG_APP_COLOR_THEME));
+        switch (colorTheme) {
+            case ColorTypeDef.GREEN:
+                setTheme(R.style.GreenAppTheme);
+                break;
+            case ColorTypeDef.RED:
+                setTheme(R.style.RedAppTheme);
+                break;
+            case ColorTypeDef.PURPLE:
+                setTheme(R.style.PurpleAppTheme);
+                break;
+            default:
+                break;
+        }
+        long cacheExpiration = 3600; // 1 hour in seconds.
+        if (firebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+        firebaseRemoteConfig.fetch(cacheExpiration).addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+//                    firebaseRemoteConfig.activateFetched();
+                }
+            }
+        });
     }
 
     public void showProgressDialog() {

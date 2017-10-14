@@ -8,8 +8,7 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="Theme.HK.Launcher" parent="Theme.HK.BaseLauncher">
-    </style>
+    <style name="Theme.HK.Launcher" parent="Theme.HK.BaseLauncher"></style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -25,12 +24,28 @@
         <item name="android:windowBackground">@color/hkWhite</item>
     </style>
 
+    <style name="GreenAppTheme" parent="AppTheme">
+        <item name="colorPrimary">#27AE60</item>
+        <item name="colorPrimaryDark">#1D8348</item>
+    </style>
+
+    <style name="RedAppTheme" parent="AppTheme">
+        <item name="colorPrimary">#C0392B</item>
+        <item name="colorPrimaryDark">#7B241C</item>
+    </style>
+
+    <style name="PurpleAppTheme" parent="AppTheme">
+        <item name="colorPrimary">#8E44AD</item>
+        <item name="colorPrimaryDark">#5B2C6F</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="TextAppearance.AppCompat.Hide" parent="TextAppearance.AppCompat">

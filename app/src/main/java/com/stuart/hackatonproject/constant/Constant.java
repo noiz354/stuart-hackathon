@@ -7,4 +7,6 @@ package com.stuart.hackatonproject.constant;
 public class Constant {
 
     public final static String DELIMITER = "-";
+
+    public final static String REMOTE_CONFIG_APP_COLOR_THEME = "app_color_theme";
 }
