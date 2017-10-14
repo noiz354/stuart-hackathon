@@ -1,5 +1,6 @@
 package com.stuart.hackatonproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.activity.DetailActivity;
 import com.stuart.hackatonproject.adapter.ReminderHolder;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.model.UserDB;
@@ -81,8 +83,16 @@ public class SharedReminderFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(ReminderHolder holder, int position, ReminderDB model) {
-                holder.bind(model);
+            protected void onBindViewHolder(ReminderHolder holder, int position, final ReminderDB reminderDB) {
+                holder.bind(reminderDB);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra(DetailReminderFragment.EXTRA_REMINDER, reminderDB);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override

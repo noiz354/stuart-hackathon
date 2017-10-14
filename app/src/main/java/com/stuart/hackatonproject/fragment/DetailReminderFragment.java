@@ -23,6 +23,8 @@ import java.util.List;
 
 public class DetailReminderFragment extends Fragment {
 
+    public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
+
     public static Fragment instance(Context context) {
         return new DetailReminderFragment();
     }
@@ -31,6 +33,13 @@ public class DetailReminderFragment extends Fragment {
     private TextView contentTextView;
     private TextView reminderAtTextView;
 
+    private ReminderDB reminderDB;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        reminderDB = getActivity().getIntent().getParcelableExtra(EXTRA_REMINDER);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,7 +47,15 @@ public class DetailReminderFragment extends Fragment {
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
+        loadData();
         return view;
+    }
+
+    private void loadData() {
+        if (reminderDB != null) {
+            titleTextView.setText(reminderDB.getTitle());
+            contentTextView.setText(reminderDB.getContent());
+        }
     }
 
     @Override
@@ -47,23 +64,29 @@ public class DetailReminderFragment extends Fragment {
         saveData();
     }
 
-    private void saveData(){
+    private void saveData() {
         String title = titleTextView.getText().toString();
         String description = contentTextView.getText().toString();
         if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description)) {
             return;
         }
+        if (reminderDB == null) {
+            reminderDB = new ReminderDB();
+        }
+        reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
+        reminderDB.setTitle(title);
+        reminderDB.setContent(description);
+        reminderDB.setCreatedAt(System.currentTimeMillis() + 10000000);
+
         List<String> toUserList = new ArrayList<>();
         toUserList.add(FirebaseUtils.getCurrentUniqueUserId());
-        for (String toUser: toUserList) {
-            ReminderDB reminderDB = new ReminderDB();
-            reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
-            reminderDB.setToUserId(toUser);
-            reminderDB.setTitle(title);
-            reminderDB.setContent(description);
-            reminderDB.setCreatedAt(System.currentTimeMillis() + 10000000);
-            reminderDB.save();
+        for (String toUser : toUserList) {
+            sendTo(toUser);
         }
+    }
 
+    private void sendTo(String toUserId) {
+        reminderDB.setToUserId(toUserId);
+        reminderDB.save();
     }
 }

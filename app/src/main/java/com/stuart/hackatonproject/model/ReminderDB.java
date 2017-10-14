@@ -1,5 +1,7 @@
 package com.stuart.hackatonproject.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.firebase.database.DatabaseReference;
@@ -12,7 +14,7 @@ import java.util.UUID;
  * Created by nathan on 10/13/17.
  */
 
-public class ReminderDB {
+public class ReminderDB implements Parcelable {
 
     public final static String TABLE_NAME = "reminder";
     public final static String FIELD_REMINDER_FROM = "reminder_from";
@@ -28,6 +30,16 @@ public class ReminderDB {
 
     public ReminderDB() {
 
+    }
+
+    public ReminderDB(ReminderDB other) {
+        this.fromUserId = other.fromUserId;
+        this.toUserId = other.toUserId;
+        this.title = other.title;
+        this.content = other.content;
+        this.createdAt = other.createdAt;
+        this.notifyAt = other.notifyAt;
+        this.uniqueId = other.uniqueId;
     }
 
     public String getFromUserId() {
@@ -102,4 +114,42 @@ public class ReminderDB {
                 .child(toUserId).child(ReminderDB.FIELD_REMINDER_FROM);
         mDatabase.child(uniqueId).setValue(this);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.fromUserId);
+        dest.writeString(this.toUserId);
+        dest.writeString(this.title);
+        dest.writeString(this.content);
+        dest.writeLong(this.createdAt);
+        dest.writeLong(this.notifyAt);
+        dest.writeString(this.uniqueId);
+    }
+
+    protected ReminderDB(Parcel in) {
+        this.fromUserId = in.readString();
+        this.toUserId = in.readString();
+        this.title = in.readString();
+        this.content = in.readString();
+        this.createdAt = in.readLong();
+        this.notifyAt = in.readLong();
+        this.uniqueId = in.readString();
+    }
+
+    public static final Creator<ReminderDB> CREATOR = new Creator<ReminderDB>() {
+        @Override
+        public ReminderDB createFromParcel(Parcel source) {
+            return new ReminderDB(source);
+        }
+
+        @Override
+        public ReminderDB[] newArray(int size) {
+            return new ReminderDB[size];
+        }
+    };
 }
