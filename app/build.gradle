@@ -58,6 +58,12 @@ dependencies {
     // FirebaseUI for Cloud Storage
     compile 'com.firebaseui:firebase-ui-storage:3.0.0'
 
+    compile("com.github.hotchemi:permissionsdispatcher:3.0.1") {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.0.1"
+
 }
 
 // Add to the bottom of the file
