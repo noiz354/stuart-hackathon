@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
@@ -32,6 +33,8 @@ public class DetailReminderFragment extends Fragment {
     private TextView titleTextView;
     private TextView contentTextView;
     private TextView reminderAtTextView;
+
+    FirebaseStorage storage = FirebaseStorage.getInstance();
 
     private ReminderDB reminderDB;
 
