@@ -124,8 +124,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(FirebaseUtils.getCurrentUniqueUserId())) {
                     UserDB user = new UserDB();
-                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getDisplayName());
-                    user.setName(LoginHelper.getAuth().getCurrentUser().getEmail());
+                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
+                    user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
                     user.save();
                 }
                 onSuccessLoginGoogle();

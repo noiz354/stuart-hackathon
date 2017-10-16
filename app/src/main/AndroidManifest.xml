@@ -16,6 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/PurpleAppTheme">
 
+        <provider
+            android:name=".util.GenericFileProvider"
+            android:authorities="${applicationId}.util.GenericFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
         <activity
             android:name="com.stuart.hackatonproject.activity.SplashActivity"
             android:label="@string/app_name"
