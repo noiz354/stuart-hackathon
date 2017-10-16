@@ -10,4 +10,5 @@
     <string name="label_title">Title</string>
     <string name="label_description">Description</string>
     <string name="label_reminder_time">Reminder Time</string>
+    <string name="list_friends">List of Friends</string>
 </resources>

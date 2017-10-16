@@ -1,6 +1,8 @@
 package com.stuart.hackatonproject.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +14,9 @@ import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.activity.ListFriendsActivity;
 import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -25,6 +29,7 @@ import java.util.List;
 public class DetailReminderFragment extends Fragment {
 
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
+    private static final int REQUEST_CODE_GET_LIST_FRIEND = 3;
 
     public static Fragment instance(Context context) {
         return new DetailReminderFragment();
@@ -33,6 +38,8 @@ public class DetailReminderFragment extends Fragment {
     private TextView titleTextView;
     private TextView contentTextView;
     private TextView reminderAtTextView;
+    private TextView friendTextList;
+    private View contentLabelFriendList;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -50,6 +57,15 @@ public class DetailReminderFragment extends Fragment {
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
+        friendTextList = view.findViewById(R.id.content_text_view);
+        contentLabelFriendList = view.findViewById(R.id.content_label_view);
+        contentLabelFriendList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ListFriendsActivity.createIntent(getActivity());
+                startActivityForResult(intent, REQUEST_CODE_GET_LIST_FRIEND);
+            }
+        });
         loadData();
         return view;
     }
@@ -58,6 +74,18 @@ public class DetailReminderFragment extends Fragment {
         if (reminderDB != null) {
             titleTextView.setText(reminderDB.getTitle());
             contentTextView.setText(reminderDB.getContent());
+            friendTextList.setText(reminderDB.getFromUserId());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == REQUEST_CODE_GET_LIST_FRIEND){
+                UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
+                friendTextList.setText(userDB.getName());
+            }
         }
     }
 

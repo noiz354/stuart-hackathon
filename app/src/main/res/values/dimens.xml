@@ -32,4 +32,21 @@
 
     <dimen name="thumbnail_height">48dp</dimen>
 
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="margin_ms">8dp</dimen>
+    <dimen name="margin_vvs">3.3dp</dimen>
+    <dimen name="margin_vvvs">2dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_small_sm">12dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
+    <dimen name="margin_med">20dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_vl">40dp</dimen>
+    <dimen name="padding_vs">5dp</dimen>
+    <dimen name="padding_vvs">3dp</dimen>
+    <dimen name="padding_vvvs">2dp</dimen>
+    <dimen name="padding_ms">8dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
+    <dimen name="padding_detail">15dp</dimen>
+
 </resources>
