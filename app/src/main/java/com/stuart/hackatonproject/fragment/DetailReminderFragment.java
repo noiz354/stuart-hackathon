@@ -24,7 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
@@ -32,6 +36,8 @@ import com.stuart.hackatonproject.util.GenericFileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -58,6 +64,7 @@ public class DetailReminderFragment extends Fragment {
     private Uri imageToUploadUri;
     private String authority;
     File f;
+    private StorageReference child;
 
     public static Fragment instance(Context context) {
         return new DetailReminderFragment();
@@ -86,7 +93,13 @@ public class DetailReminderFragment extends Fragment {
         setAuthority();
         initImageUI(view);
         loadData();
+        getReference();
         return view;
+    }
+
+    private void getReference() {
+        StorageReference reference = storage.getReference();
+        child = reference.child("test_doang.jpg");
     }
 
     private void loadData() {
@@ -200,6 +213,25 @@ public class DetailReminderFragment extends Fragment {
                 Bitmap reducedSizeBitmap = getBitmap(f.getPath());
                 if(reducedSizeBitmap != null){
                     imageViewAttachment1.setImageBitmap(reducedSizeBitmap);
+
+                    try {
+                        InputStream stream = new FileInputStream(f);
+                        UploadTask uploadTask = child.putStream(stream);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            }
+                        });
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
 //                    ImgPhoto.setImageBitmap(reducedSizeBitmap);
 //                    Button uploadImageButton = (Button) findViewById(R.id.uploadUserImageButton);
 //                    uploadImageButton.setVisibility(View.VISIBLE);
