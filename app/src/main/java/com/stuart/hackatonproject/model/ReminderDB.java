@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.stuart.hackatonproject.constant.Constant;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -19,6 +21,7 @@ public class ReminderDB implements Parcelable {
     public final static String TABLE_NAME = "reminder";
     public final static String FIELD_REMINDER_FROM = "reminder_from";
     public final static String FIELD_REMINDER_TO = "reminder_to";
+    public final static String FIELD_IMAGES = "images";
 
     private String fromUserId;
     private String toUserId;
@@ -27,6 +30,12 @@ public class ReminderDB implements Parcelable {
     private long createdAt;
     private long notifyAt;
     private String uniqueId;
+    private Map<Integer, Object> imageIds = new HashMap<>();
+    private String imageOne, imageTwo;
+
+    public void put(Integer position, String fileName){
+        imageIds.put(position, fileName);
+    }
 
     public ReminderDB() {
 
@@ -40,6 +49,22 @@ public class ReminderDB implements Parcelable {
         this.createdAt = other.createdAt;
         this.notifyAt = other.notifyAt;
         this.uniqueId = other.uniqueId;
+    }
+
+    public String getImageOne() {
+        return imageOne;
+    }
+
+    public void setImageOne(String imageOne) {
+        this.imageOne = imageOne;
+    }
+
+    public String getImageTwo() {
+        return imageTwo;
+    }
+
+    public void setImageTwo(String imageTwo) {
+        this.imageTwo = imageTwo;
     }
 
     public String getFromUserId() {
@@ -106,13 +131,26 @@ public class ReminderDB implements Parcelable {
         this.uniqueId = uniqueId;
     }
 
+    public void saveImage(){
+        if(!imageIds.isEmpty()){
+            if(imageIds.get(0) != null){
+                imageOne = (String) imageIds.get(0);
+            }
+
+            if(imageIds.get(1) != null){
+                imageTwo = (String) imageIds.get(1);
+            }
+        }
+    }
+
     public void save() {
         if (TextUtils.isEmpty(uniqueId)) {
             uniqueId = UUID.randomUUID().toString();
         }
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME)
                 .child(toUserId).child(ReminderDB.FIELD_REMINDER_FROM);
-        mDatabase.child(uniqueId).setValue(this);
+        mDatabase.child(uniqueId)
+                .setValue(this);
     }
 
     @Override
