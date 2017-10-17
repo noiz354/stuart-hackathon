@@ -37,19 +37,24 @@ public class BaseActivity extends AppCompatActivity {
     @CallSuper
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setUpAppTheme();
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setUpToolbar();
-        setUpAppTheme();
     }
 
     protected void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(hasBackButton());
+            getSupportActionBar().setTitle(getTitle());
         }
+    }
+
+    protected boolean hasBackButton(){
+        return true;
     }
 
     private void setUpAppTheme() {

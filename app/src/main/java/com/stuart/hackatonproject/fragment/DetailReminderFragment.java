@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -185,7 +187,11 @@ public class DetailReminderFragment extends Fragment {
 
     private void sendTo(String toUserId) {
         reminderDB.setToUserId(toUserId);
+        Trace trace = FirebasePerformance.getInstance().newTrace("trace_save_reminder");
+        trace.start();
         reminderDB.save();
+        trace.incrementCounter("save_reminder_hit");
+        trace.stop();
     }
 
     private void initImageUI(View view){
@@ -258,6 +264,11 @@ public class DetailReminderFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND){
+            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
+            friendTextList.setText(userDB.getName());
+            return;
+        }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             if(imageToUploadUri != null){
                 Uri selectedImage = imageToUploadUri;
