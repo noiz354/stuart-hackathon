@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -77,6 +78,7 @@ public class DetailReminderFragment extends Fragment {
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
     private ReminderDB reminderDB;
+    private int imageSelection = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +101,7 @@ public class DetailReminderFragment extends Fragment {
 
     private void getReference() {
         StorageReference reference = storage.getReference();
-        child = reference.child("test_doang.jpg");
+        child = reference.child(String.format("real_image_%s.jpg", UUID.randomUUID().toString()));
     }
 
     private void loadData() {
@@ -147,13 +149,15 @@ public class DetailReminderFragment extends Fragment {
         imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imageSelection = 0;
                 DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
             }
         });
         imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                imageSelection = 1;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
             }
         });
     }
@@ -180,10 +184,6 @@ public class DetailReminderFragment extends Fragment {
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         startActivityForResult(chooserIntent, CAMERA_REQUEST);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.sample_content_fragment, CameraPreviewFragment.newInstance())
-//                .addToBackStack("camera")
-//                .commitAllowingStateLoss();
     }
 
     @OnShowRationale(Manifest.permission.CAMERA)
@@ -225,34 +225,19 @@ public class DetailReminderFragment extends Fragment {
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                             }
                         });
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-//                    ImgPhoto.setImageBitmap(reducedSizeBitmap);
-//                    Button uploadImageButton = (Button) findViewById(R.id.uploadUserImageButton);
-//                    uploadImageButton.setVisibility(View.VISIBLE);
                 }else{
                     Toast.makeText(getActivity(),"Error while capturing Image",Toast.LENGTH_LONG).show();
                 }
             }else{
                 Toast.makeText(getActivity(),"Error while capturing Image", Toast.LENGTH_LONG).show();
             }
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-////            imageView.setImageBitmap(photo);
-////            knop.setVisibility(Button.VISIBLE);
-//
-//
-//            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-//            Uri tempUri = getImageUri(getActivity().getApplicationContext(), photo);
-//
-//            // CALL THIS METHOD TO GET THE ACTUAL PATH
-//            File finalFile = new File(getRealPathFromURI(tempUri));
-//
-////            System.out.println(mImageCaptureUri);
         }
     }
 
@@ -318,19 +303,5 @@ public class DetailReminderFragment extends Fragment {
 
     private void setAuthority() {
         authority = getContext().getApplicationContext().getPackageName() + ".util.GenericFileProvider";
-    }
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
     }
 }
