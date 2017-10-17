@@ -9,91 +9,94 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray_solid_100"
-        android:orientation="vertical"
         android:divider="@drawable/line_divider_medium"
-        android:showDividers="middle"
+        android:orientation="vertical"
+        android:showDividers="middle|end"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include layout="@layout/view_label_list_friends" />
 
-        <FrameLayout style="@style/LabelLayout">
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/text_input_layout_title"
-                style="@style/TextInputLayout"
-                app:counterEnabled="true"
-                app:counterMaxLength="50">
-
-                <EditText
-                    android:id="@+id/edit_text_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/label_title"
-                    android:imeOptions="actionDone"
-                    android:inputType="text"
-                    android:maxLength="50" />
-
-            </android.support.design.widget.TextInputLayout>
-        </FrameLayout>
-
-        <FrameLayout
-            style="@style/LabelLayout"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small">
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/text_input_layout_description"
-                style="@style/TextInputLayout"
-                app:counterEnabled="true"
-                app:counterMaxLength="300"
-                android:layout_marginBottom="-10dp"
-                android:layout_marginTop="-10dp">
-
-                <EditText
-                    android:id="@+id/edit_text_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:hint="@string/label_description"
-                    android:imeOptions="actionNext"
-                    android:gravity="top"
-                    android:inputType="textMultiLine"
-                    android:lines="2"
-                    android:maxLength="300" />
-
-            </android.support.design.widget.TextInputLayout>
-        </FrameLayout>
-
-        <EditText
-            android:id="@+id/edit_text_reminder_at_time"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:layout_marginTop="@dimen/padding_10"
-            android:background="@color/hkWhite"
-            android:hint="@string/label_reminder_time" />
+            android:orientation="vertical"
+            android:divider="@drawable/line_divider"
+            android:showDividers="middle">
+
+            <FrameLayout style="@style/LabelLayout">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_title"
+                    style="@style/TextInputLayout"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="50">
+
+                    <EditText
+                        android:id="@+id/edit_text_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/label_title"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLength="50" />
+                </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
+
+            <FrameLayout style="@style/LabelLayout">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_description"
+                    style="@style/TextInputLayout"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="300">
+
+                    <EditText
+                        android:id="@+id/edit_text_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:gravity="top"
+                        android:hint="@string/label_description"
+                        android:imeOptions="actionNext"
+                        android:inputType="textMultiLine"
+                        android:lines="2"
+                        android:maxLength="300" />
+
+                </android.support.design.widget.TextInputLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+
+        <FrameLayout style="@style/LabelLayout">
+
+            <EditText
+                android:id="@+id/edit_text_reminder_at_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/hkWhite"
+                android:hint="@string/label_reminder_time" />
+        </FrameLayout>
 
         <LinearLayout
             style="@style/LabelLayout"
-            android:orientation="vertical"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med">
+            android:orientation="vertical">
 
             <TextView
-                android:layout_marginBottom="@dimen/margin_med"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med"
                 android:text="@string/add_image"
-                android:textSize="@dimen/font_18"/>
+                android:textSize="@dimen/font_18" />
 
             <LinearLayout
-                android:layout_gravity="center_horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rect_stroke_gray">
+
                     <ImageView
                         android:id="@+id/image_view_image_attachment_1"
                         android:layout_width="@dimen/thumbnail_height"
@@ -106,8 +109,9 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rect_stroke_gray"
-                    android:layout_marginLeft="-1dp">
+                    android:layout_marginLeft="-1dp"
+                    android:background="@drawable/rect_stroke_gray">
+
                     <ImageView
                         android:id="@+id/image_view_image_attachment_2"
                         android:layout_width="@dimen/thumbnail_height"

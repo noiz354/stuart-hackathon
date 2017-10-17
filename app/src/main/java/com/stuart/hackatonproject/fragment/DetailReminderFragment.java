@@ -248,6 +248,8 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         for (String toUser : toUserList) {
             sendTo(toUser);
         }
+        ToastUtil.showToast(getContext(), getString(R.string.reminder_has_been_created));
+        getActivity().finish();
     }
 
     private void sendTo(String toUserId) {

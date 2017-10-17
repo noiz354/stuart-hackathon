@@ -26,4 +26,5 @@
     <string name="reminder_from">Reminder from :</string>
     <string name="reminder_to">Who Friends to Remind?</string>
     <string name="add_image">Add Reminder Picture</string>
+    <string name="reminder_has_been_created">Reminder has been successfully created.</string>
 </resources>
