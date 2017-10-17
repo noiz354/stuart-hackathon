@@ -62,6 +62,11 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     }
 
+    @Override
+    protected boolean hasBackButton() {
+        return false;
+    }
+
     private void setUpGoogleApiClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))

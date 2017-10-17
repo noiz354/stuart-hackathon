@@ -48,9 +48,13 @@ public class BaseActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(hasBackButton());
             getSupportActionBar().setTitle(getTitle());
         }
+    }
+
+    protected boolean hasBackButton(){
+        return true;
     }
 
     private void setUpAppTheme() {
