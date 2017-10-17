@@ -1,28 +1,31 @@
 package com.stuart.hackatonproject.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
+
+import java.util.Date;
 
 public class ReminderHolder extends RecyclerView.ViewHolder {
     private TextView titleTextView;
     private TextView contentTextView;
-    private TextView notifyTimeimeTextView;
+    private TextView notifyTimeTextView;
 
     public ReminderHolder(View itemView) {
         super(itemView);
         titleTextView = itemView.findViewById(R.id.text_view_title);
         contentTextView = itemView.findViewById(R.id.text_view_content);
-        notifyTimeimeTextView = itemView.findViewById(R.id.notify_text_view_time);
+        notifyTimeTextView = itemView.findViewById(R.id.notify_text_view_time);
     }
 
     public void bind(ReminderDB reminderDB) {
         titleTextView.setText(reminderDB.getTitle());
         contentTextView.setText(reminderDB.getContent());
-        notifyTimeimeTextView.setText(DateUtils.getRelativeTimeSpanString(System.currentTimeMillis() - reminderDB.getNotifyAt(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
+        String timeFormat = DateTimeUtils.formatTime(new Date(reminderDB.getNotifyAt()), true);
+        notifyTimeTextView.setText(timeFormat);
     }
 }
