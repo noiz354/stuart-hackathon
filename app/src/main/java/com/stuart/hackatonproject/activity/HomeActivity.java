@@ -7,13 +7,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,8 +26,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
-import com.stuart.hackatonproject.adapter.ViewPagerAdapter;
-import com.stuart.hackatonproject.fragment.LocalReminderFragment;
 import com.stuart.hackatonproject.fragment.SharedReminderFragment;
 import com.stuart.hackatonproject.helper.LoginHelper;
 
@@ -34,10 +33,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     public static final String TAG = HomeActivity.class.getSimpleName();
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
     private GoogleApiClient mGoogleApiClient;
+
+    private AdView mAdView;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
@@ -51,16 +49,16 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpGoogleApiClient();
         setUpToolbar();
-        viewPager = findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        replaceFragment(new SharedReminderFragment(), false);
+        Toast.makeText(this, "User login: " + LoginHelper.getAuth().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         FirebaseMessaging.getInstance().subscribeToTopic(LoginHelper.getAuth().getUid());
     }
@@ -80,13 +78,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new LocalReminderFragment(), "Local");
-        adapter.addFragment(new SharedReminderFragment(), "Shared");
-        viewPager.setAdapter(adapter);
     }
 
     @Override

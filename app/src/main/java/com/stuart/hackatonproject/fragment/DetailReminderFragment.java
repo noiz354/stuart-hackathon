@@ -1,7 +1,9 @@
 package com.stuart.hackatonproject.fragment;
 
+import android.app.Activity;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,7 +32,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.activity.ListFriendsActivity;
 import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 
@@ -42,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -59,6 +64,7 @@ import static android.app.Activity.RESULT_OK;
 public class DetailReminderFragment extends Fragment {
 
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
+    private static final int REQUEST_CODE_GET_LIST_FRIEND = 3;
     private static final int CAMERA_REQUEST = 192;
     private ImageView imageViewAttachment1, imageViewAttachment2;
     private Uri imageToUploadUri;
@@ -73,10 +79,13 @@ public class DetailReminderFragment extends Fragment {
     private TextView titleTextView;
     private TextView contentTextView;
     private TextView reminderAtTextView;
+    private TextView friendTextList;
+    private View contentLabelFriendList;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
     private ReminderDB reminderDB;
+    private int imageSelection = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +99,15 @@ public class DetailReminderFragment extends Fragment {
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
+        friendTextList = view.findViewById(R.id.content_text_view);
+        contentLabelFriendList = view.findViewById(R.id.content_label_view);
+        contentLabelFriendList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ListFriendsActivity.createIntent(getActivity());
+                startActivityForResult(intent, REQUEST_CODE_GET_LIST_FRIEND);
+            }
+        });
         setAuthority();
         initImageUI(view);
         loadData();
@@ -99,13 +117,14 @@ public class DetailReminderFragment extends Fragment {
 
     private void getReference() {
         StorageReference reference = storage.getReference();
-        child = reference.child("test_doang.jpg");
+        child = reference.child(String.format("real_image_%s.jpg", UUID.randomUUID().toString()));
     }
 
     private void loadData() {
         if (reminderDB != null) {
             titleTextView.setText(reminderDB.getTitle());
             contentTextView.setText(reminderDB.getContent());
+            friendTextList.setText(reminderDB.getFromUserId());
         }
     }
 
@@ -147,13 +166,15 @@ public class DetailReminderFragment extends Fragment {
         imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imageSelection = 0;
                 DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
             }
         });
         imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                imageSelection = 1;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
             }
         });
     }
@@ -180,10 +201,6 @@ public class DetailReminderFragment extends Fragment {
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         startActivityForResult(chooserIntent, CAMERA_REQUEST);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.sample_content_fragment, CameraPreviewFragment.newInstance())
-//                .addToBackStack("camera")
-//                .commitAllowingStateLoss();
     }
 
     @OnShowRationale(Manifest.permission.CAMERA)
@@ -206,6 +223,11 @@ public class DetailReminderFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND){
+            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
+            friendTextList.setText(userDB.getName());
+            return;
+        }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             if(imageToUploadUri != null){
                 Uri selectedImage = imageToUploadUri;
@@ -225,34 +247,19 @@ public class DetailReminderFragment extends Fragment {
                         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                             }
                         });
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-//                    ImgPhoto.setImageBitmap(reducedSizeBitmap);
-//                    Button uploadImageButton = (Button) findViewById(R.id.uploadUserImageButton);
-//                    uploadImageButton.setVisibility(View.VISIBLE);
                 }else{
                     Toast.makeText(getActivity(),"Error while capturing Image",Toast.LENGTH_LONG).show();
                 }
             }else{
                 Toast.makeText(getActivity(),"Error while capturing Image", Toast.LENGTH_LONG).show();
             }
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-////            imageView.setImageBitmap(photo);
-////            knop.setVisibility(Button.VISIBLE);
-//
-//
-//            // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-//            Uri tempUri = getImageUri(getActivity().getApplicationContext(), photo);
-//
-//            // CALL THIS METHOD TO GET THE ACTUAL PATH
-//            File finalFile = new File(getRealPathFromURI(tempUri));
-//
-////            System.out.println(mImageCaptureUri);
         }
     }
 
@@ -318,19 +325,5 @@ public class DetailReminderFragment extends Fragment {
 
     private void setAuthority() {
         authority = getContext().getApplicationContext().getPackageName() + ".util.GenericFileProvider";
-    }
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
     }
 }

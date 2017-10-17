@@ -1,5 +1,8 @@
 package com.stuart.hackatonproject.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,7 +15,7 @@ import com.stuart.hackatonproject.util.FirebaseUtils;
  * Created by nathan on 10/13/17.
  */
 
-public class UserDB {
+public class UserDB implements Parcelable {
 
     public final static String TABLE_NAME = "user";
     public String name;
@@ -44,4 +47,31 @@ public class UserDB {
         databaseReference.child(FirebaseUtils.getUniqueUserId(email)).setValue(this);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeString(this.email);
+    }
+
+    protected UserDB(Parcel in) {
+        this.name = in.readString();
+        this.email = in.readString();
+    }
+
+    public static final Creator<UserDB> CREATOR = new Creator<UserDB>() {
+        @Override
+        public UserDB createFromParcel(Parcel source) {
+            return new UserDB(source);
+        }
+
+        @Override
+        public UserDB[] newArray(int size) {
+            return new UserDB[size];
+        }
+    };
 }
