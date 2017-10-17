@@ -3,12 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/hkWhite"
-    android:paddingTop="@dimen/margin_ms"
-    android:paddingLeft="@dimen/margin_ms"
-    android:paddingRight="@dimen/margin_ms"
-    android:paddingBottom="@dimen/margin_ms"
+    style="@style/LabelLayout"
     android:id="@+id/content_label_view"
     android:gravity="center_vertical"
     android:orientation="horizontal">
