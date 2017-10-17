@@ -1,67 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/hkWhite"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:padding="@dimen/padding_16">
 
-    <EditText
-        android:id="@+id/edit_text_title"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/label_title" />
+        android:background="@color/hkWhite"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <EditText
-        android:id="@+id/edit_text_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/padding_10"
-        android:layout_weight="1"
-        android:gravity="top"
-        android:hint="@string/label_description" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_title">
 
-    <EditText
-        android:id="@+id/edit_text_reminder_at_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_10"
-        android:hint="@string/label_reminder_time" />
+            <EditText
+                android:id="@+id/edit_text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.design.widget.TextInputLayout>
 
-    <include layout="@layout/view_label_list_friends"/>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_description">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_10"
-        android:text="@string/label_image" />
+            <EditText
+                android:id="@+id/edit_text_content"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/padding_10"
+                android:gravity="top"
+                android:hint="@string/label_description"
+                android:maxLines="10" />
+        </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_reminder_time">
+            <EditText
+                android:id="@+id/edit_text_reminder_at_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/label_reminder_time" />
+        </android.support.design.widget.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/image_view_image_attachment_1"
-            android:layout_width="@dimen/thumbnail_height"
-            android:layout_height="@dimen/thumbnail_height"
-            android:padding="@dimen/padding_4"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_add_placeholder" />
+        <include layout="@layout/view_label_list_friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:id="@+id/image_view_image_attachment_2"
-            android:layout_width="@dimen/thumbnail_height"
-            android:layout_height="@dimen/thumbnail_height"
-            android:padding="@dimen/padding_4"
-            android:src="@drawable/ic_add_placeholder" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_10"
+            android:textSize="@dimen/font_18"
+            android:text="@string/label_image" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image_view_image_attachment_1"
+                android:layout_width="@dimen/thumbnail_height"
+                android:layout_height="@dimen/thumbnail_height"
+                android:padding="@dimen/padding_4"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_add_placeholder" />
+
+            <ImageView
+                android:id="@+id/image_view_image_attachment_2"
+                android:layout_width="@dimen/thumbnail_height"
+                android:layout_height="@dimen/thumbnail_height"
+                android:padding="@dimen/padding_4"
+                android:src="@drawable/ic_add_placeholder" />
+        </LinearLayout>
+
     </LinearLayout>
 
+</ScrollView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_video" />
-
-</LinearLayout>

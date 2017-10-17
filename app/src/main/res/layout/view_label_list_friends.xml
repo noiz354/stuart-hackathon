@@ -4,19 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/hkWhite"
-    android:paddingTop="@dimen/margin_ms"
-    android:paddingLeft="@dimen/margin_ms"
-    android:paddingRight="@dimen/margin_ms"
-    android:paddingBottom="@dimen/margin_ms"
     android:id="@+id/content_label_view"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/padding_8"
+    android:paddingBottom="@dimen/padding_8">
 
     <TextView
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/font_18"
         android:maxLines="1"
         android:text="@string/list_friends" />
 
@@ -24,8 +22,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginStart="@dimen/margin_ms"
         android:layout_weight="1"
         android:gravity="end">
 
@@ -33,16 +29,7 @@
             android:id="@+id/content_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginRight="@dimen/margin_ms"
+            android:textSize="@dimen/font_18"
             android:maxLines="1" />
-
-        <ImageView
-            android:id="@+id/arrow_left"
-            android:layout_width="10dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center_vertical|end"
-            android:src="@drawable/ic_arrow_right"
-            tools:visibility="visible" />
     </LinearLayout>
 </LinearLayout>
