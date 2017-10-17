@@ -28,4 +28,5 @@
     <string name="add_image">Add Reminder Picture</string>
     <string name="reminder_has_been_created">Reminder has been successfully created.</string>
     <string name="add_your_message">Add Your Message</string>
+    <string name="edit_reminder">Edit Reminder</string>
 </resources>

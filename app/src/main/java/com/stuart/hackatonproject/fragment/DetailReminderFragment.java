@@ -107,11 +107,11 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         if (reminderDB == null) {
             reminderDB = new ReminderDB();
             reminderDB.generateUniqueId(); // this generate id even not used
+            reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
             isImageExists = false;
         } else {
             isImageExists = true;
         }
-        reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
 
         setHasOptionsMenu(true);
     }

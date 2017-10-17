@@ -24,7 +24,12 @@ public class DetailActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_fragment);
+        if (savedInstanceState == null) {
+            replaceFragment(DetailReminderFragment.instance(this), false);
+        }
         setUpToolbar();
-        replaceFragment(DetailReminderFragment.instance(this), false);
+        if (getIntent().hasExtra(DetailReminderFragment.EXTRA_REMINDER)) {
+            getSupportActionBar().setTitle(getString(R.string.edit_reminder));
+        }
     }
 }
