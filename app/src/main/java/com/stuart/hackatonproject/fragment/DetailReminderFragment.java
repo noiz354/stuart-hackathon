@@ -281,7 +281,7 @@ public class DetailReminderFragment extends Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND){
-            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
+            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOSEN);
             friendTextList.setText(userDB.getName());
             return;
         }

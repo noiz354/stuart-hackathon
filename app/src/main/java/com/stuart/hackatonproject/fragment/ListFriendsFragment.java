@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,12 +16,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.stuart.hackatonproject.R;
-import com.stuart.hackatonproject.activity.DetailActivity;
 import com.stuart.hackatonproject.adapter.FriendsHolder;
-import com.stuart.hackatonproject.adapter.ReminderHolder;
-import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.model.UserDB;
-import com.stuart.hackatonproject.util.FirebaseUtils;
 
 /**
  * Created by zulfikarrahman on 10/16/17.
@@ -30,7 +25,7 @@ import com.stuart.hackatonproject.util.FirebaseUtils;
 
 public class ListFriendsFragment extends Fragment {
 
-    public static final String EXTRA_USER_CHOOSEN = "extra_user_choosen";
+    public static final String EXTRA_USER_CHOSEN = "extra_user_chosen";
     protected static final Query sChatQuery =
             FirebaseDatabase.getInstance().getReference().child(UserDB.TABLE_NAME)
                     .limitToLast(50);
@@ -93,7 +88,7 @@ public class ListFriendsFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent();
-                        intent.putExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN, userDB);
+                        intent.putExtra(ListFriendsFragment.EXTRA_USER_CHOSEN, userDB);
                         getActivity().setResult(Activity.RESULT_OK, intent);
                         getActivity().finish();
                     }
