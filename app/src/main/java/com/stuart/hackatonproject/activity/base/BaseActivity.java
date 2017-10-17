@@ -2,6 +2,7 @@ package com.stuart.hackatonproject.activity.base;
 
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -37,7 +38,6 @@ public class BaseActivity extends AppCompatActivity {
     @CallSuper
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setUpAppTheme();
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -53,14 +53,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected boolean hasBackButton(){
-        return true;
-    }
-
-    private void setUpAppTheme() {
+    @Override
+    public Resources.Theme getTheme() {
         final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         if (TextUtils.isEmpty(firebaseRemoteConfig.getString(Constant.REMOTE_CONFIG_APP_COLOR_THEME))) {
-            return;
+            return super.getTheme();
         }
         @ColorTypeDef int colorTheme = Integer.valueOf(firebaseRemoteConfig.getString(Constant.REMOTE_CONFIG_APP_COLOR_THEME));
         switch (colorTheme) {
@@ -84,10 +81,15 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-//                    firebaseRemoteConfig.activateFetched();
+                    // firebaseRemoteConfig.activateFetched();
                 }
             }
         });
+        return super.getTheme();
+    }
+
+    protected boolean hasBackButton(){
+        return true;
     }
 
     public void showProgressDialog() {

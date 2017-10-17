@@ -23,7 +23,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/padding_16"
             app:srcCompat="@drawable/ic_add"
-            app:backgroundTint="@color/colorPrimary"/>
+            app:backgroundTint="?attr/colorPrimary"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
