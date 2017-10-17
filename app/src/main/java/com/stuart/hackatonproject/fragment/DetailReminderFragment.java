@@ -1,6 +1,7 @@
 package com.stuart.hackatonproject.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 
