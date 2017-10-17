@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -157,7 +159,11 @@ public class DetailReminderFragment extends Fragment {
 
     private void sendTo(String toUserId) {
         reminderDB.setToUserId(toUserId);
+        Trace trace = FirebasePerformance.getInstance().newTrace("trace_save_reminder");
+        trace.start();
         reminderDB.save();
+        trace.incrementCounter("save_reminder_hit");
+        trace.stop();
     }
 
     private void initImageUI(View view){
