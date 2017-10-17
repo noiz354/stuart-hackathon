@@ -57,4 +57,30 @@
         <item name="android:textColorPrimary">@color/gray_solid_700</item>
         <item name="android:background">@color/hkWhite</item>
     </style>
+
+    <style name="LabelLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@color/hkWhite</item>
+        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingLeft">@dimen/margin_sm</item>
+        <item name="android:paddingRight">@dimen/margin_sm</item>
+        <item name="android:paddingBottom">@dimen/margin_sm</item>
+    </style>
+
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">-4dp</item>
+        <item name="android:layout_marginRight">-4dp</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+
+    <style name="TextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
+        <item name="android:textColorHint">@color/gray_solid_500</item>
+        <item name="colorControlNormal">@color/gray_solid_800</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
 </resources>
