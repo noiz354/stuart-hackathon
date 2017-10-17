@@ -60,7 +60,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        FirebaseMessaging.getInstance().subscribeToTopic(LoginHelper.getAuth().getUid());
     }
 
     private void setUpGoogleApiClient() {
@@ -106,7 +105,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
             public void onResult(@NonNull Status status) {
                 if (status.isSuccess()) {
                     // Firebase sign out
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(LoginHelper.getAuth().getUid());
                     LoginHelper.signOut();
                     SignInActivity.startNewTask(HomeActivity.this);
                 }
