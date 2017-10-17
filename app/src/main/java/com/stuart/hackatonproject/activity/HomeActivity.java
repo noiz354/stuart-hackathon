@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,17 +18,12 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
-import com.stuart.hackatonproject.adapter.ViewPagerAdapter;
-import com.stuart.hackatonproject.fragment.LocalReminderFragment;
 import com.stuart.hackatonproject.fragment.SharedReminderFragment;
 import com.stuart.hackatonproject.helper.LoginHelper;
 
 public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -45,16 +39,12 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_base_fragment);
         setUpGoogleApiClient();
         setUpToolbar();
-        viewPager = findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        replaceFragment(new SharedReminderFragment(), false);
         Toast.makeText(this, "User login: " + LoginHelper.getAuth().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
     }
 
@@ -73,13 +63,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new LocalReminderFragment(), "Local");
-        adapter.addFragment(new SharedReminderFragment(), "Shared");
-        viewPager.setAdapter(adapter);
     }
 
     @Override
