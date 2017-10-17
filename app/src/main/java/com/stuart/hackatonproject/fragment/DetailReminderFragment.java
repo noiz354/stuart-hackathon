@@ -41,6 +41,7 @@ import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
+import com.stuart.hackatonproject.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -203,13 +204,19 @@ public class DetailReminderFragment extends Fragment {
 
     private void saveData() {
         String title = titleTextView.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            ToastUtil.showToast(getContext(), getString(R.string.title_must_be_filled));
+            return;
+        }
+
         String description = contentTextView.getText().toString();
-        if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description)) {
+        if (TextUtils.isEmpty(description)) {
+            ToastUtil.showToast(getContext(), getString(R.string.description_must_be_filled));
             return;
         }
         reminderDB.setTitle(title);
         reminderDB.setContent(description);
-        reminderDB.setCreatedAt(System.currentTimeMillis() + 10000000);
+        reminderDB.setCreatedAt(System.currentTimeMillis());
         List<String> toUserList = new ArrayList<>();
         toUserList.add(FirebaseUtils.getCurrentUniqueUserId());
         for (String toUser : toUserList) {

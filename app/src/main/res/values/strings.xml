@@ -21,4 +21,6 @@
     <string name="invitation_deep_link">https://news.detik.com/internasional/d-3687285/diplomat-korut-ingatkan-perang-nuklir-bisa-pecah-kapan-saja?</string>
     <string name="invitation_custom_image">https://1.bp.blogspot.com/-YIfQT6q8ZM4/Vzyq5z1B8HI/AAAAAAAAAAc/UmWSSMLKtKgtH7CACElUp12zXkrPK5UoACLcB/s1600/image00.png</string>
     <string name="done">done</string>
+    <string name="title_must_be_filled">Judul harus diisi</string>
+    <string name="description_must_be_filled">Deskripsi harus diisi</string>
 </resources>
