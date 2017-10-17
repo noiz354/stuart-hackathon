@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/hkWhite"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <EditText
@@ -28,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_10"
         android:hint="@string/label_reminder_time" />
+
+    <include layout="@layout/view_label_list_friends"/>
 
     <TextView
         android:layout_width="wrap_content"
