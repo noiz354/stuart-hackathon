@@ -144,13 +144,17 @@ public class ReminderDB implements Parcelable {
     }
 
     public void save() {
-        if (TextUtils.isEmpty(uniqueId)) {
-            uniqueId = UUID.randomUUID().toString();
-        }
+        generateUniqueId();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME)
                 .child(toUserId).child(ReminderDB.FIELD_REMINDER_FROM);
         mDatabase.child(uniqueId)
                 .setValue(this);
+    }
+
+    public void generateUniqueId() {
+        if (TextUtils.isEmpty(uniqueId)) {
+            uniqueId = UUID.randomUUID().toString();
+        }
     }
 
     @Override

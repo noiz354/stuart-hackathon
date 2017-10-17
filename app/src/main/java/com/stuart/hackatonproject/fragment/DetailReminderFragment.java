@@ -98,7 +98,7 @@ public class DetailReminderFragment extends Fragment {
         reminderDB = getActivity().getIntent().getParcelableExtra(EXTRA_REMINDER);
         if (reminderDB == null) {
             reminderDB = new ReminderDB();
-            reminderDB.save(); // this generate id even not used
+            reminderDB.generateUniqueId(); // this generate id even not used
             isImageExists = false;
         }else{
             isImageExists = true;
