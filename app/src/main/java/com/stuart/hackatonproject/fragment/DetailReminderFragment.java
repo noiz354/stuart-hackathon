@@ -17,6 +17,9 @@ import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -98,12 +101,13 @@ public class DetailReminderFragment extends Fragment {
         reminderDB = getActivity().getIntent().getParcelableExtra(EXTRA_REMINDER);
         if (reminderDB == null) {
             reminderDB = new ReminderDB();
-            reminderDB.save(); // this generate id even not used
             isImageExists = false;
         }else{
             isImageExists = true;
         }
         reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -126,6 +130,23 @@ public class DetailReminderFragment extends Fragment {
         initImageDependencies();
         loadData();
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_done, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_done :
+                saveData();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initImageDependencies() {
@@ -177,12 +198,6 @@ public class DetailReminderFragment extends Fragment {
                 });
             }
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveData();
     }
 
     private void saveData() {
