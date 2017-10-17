@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -51,11 +53,27 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
         setContentView(R.layout.activity_main);
         setUpGoogleApiClient();
         setUpToolbar();
-        replaceFragment(new SharedReminderFragment(), false);
-        Toast.makeText(this, "User login: " + LoginHelper.getAuth().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+
+        if (savedInstanceState == null) {
+            replaceFragment(new SharedReminderFragment(), false);
+        }
+
+        FloatingActionButton fabAdd = findViewById(R.id.fab_add);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DetailActivity.startNew(HomeActivity.this);
+            }
+        });
+
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+    }
+
+    @Override
+    protected boolean hasBackButton() {
+        return false;
     }
 
     private void setUpGoogleApiClient() {
@@ -84,9 +102,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_add:
-                DetailActivity.startNew(this);
-                return true;
             case R.id.menu_sign_out:
                 signOut();
                 return true;

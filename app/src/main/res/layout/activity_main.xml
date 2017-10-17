@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_content"
-    android:layout_width="match_parent"
+
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:fitsSystemWindows="true">
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/view_title_back_toolbar" />
+        <include layout="@layout/view_title_back_toolbar" />
 
-    <include layout="@layout/fragment_content" />
+        <include layout="@layout/fragment_content" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/padding_16"
+            app:srcCompat="@drawable/ic_add"
+            app:backgroundTint="@color/colorPrimary"/>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="bottom">
 
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,6 +43,5 @@
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
 
     </RelativeLayout>
+</LinearLayout>
 
-
-</android.support.design.widget.CoordinatorLayout>
