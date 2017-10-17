@@ -7,4 +7,10 @@
         android:title="@string/google_sign_out"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_invite"
+        android:icon="@drawable/ic_share_menu"
+        android:title="@string/invite_friends"
+        app:showAsAction="always" />
+
 </menu>

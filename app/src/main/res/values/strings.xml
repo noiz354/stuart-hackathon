@@ -16,4 +16,8 @@
     <string name="default_notification_channel_name" translatable="true">stuart_hackathon</string>
     <string name="app_topics" translatable="false">stuart_hackathon</string>
     <string name="add_reminder">Tambah Reminder</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="invitation_message">Ayo pasang aplikasi Task Reminder sekarang!</string>
+    <string name="invitation_deep_link">https://news.detik.com/internasional/d-3687285/diplomat-korut-ingatkan-perang-nuklir-bisa-pecah-kapan-saja?</string>
+    <string name="invitation_custom_image">https://1.bp.blogspot.com/-YIfQT6q8ZM4/Vzyq5z1B8HI/AAAAAAAAAAc/UmWSSMLKtKgtH7CACElUp12zXkrPK5UoACLcB/s1600/image00.png</string>
 </resources>
