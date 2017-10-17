@@ -20,8 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:divider="@drawable/line_divider"
-            android:showDividers="middle">
+            android:background="@color/hkWhite">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_your_message"
+                android:layout_marginLeft="@dimen/padding_16"
+                android:layout_marginRight="@dimen/padding_16"
+                android:layout_marginTop="@dimen/padding_16"
+                android:layout_marginBottom="@dimen/padding_8"
+                android:textSize="@dimen/font_18" />
 
             <FrameLayout style="@style/LabelLayout">
 
@@ -41,6 +50,11 @@
                         android:maxLength="50" />
                 </android.support.design.widget.TextInputLayout>
             </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/line_divider" />
 
             <FrameLayout style="@style/LabelLayout">
 
@@ -83,7 +97,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginTop="@dimen/padding_8"
+                android:layout_marginBottom="@dimen/padding_8"
                 android:text="@string/add_image"
                 android:textSize="@dimen/font_18" />
 

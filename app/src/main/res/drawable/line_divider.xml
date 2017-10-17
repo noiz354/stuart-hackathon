@@ -6,6 +6,6 @@
         android:height="1dp"/>
 
     <solid
-        android:color="@color/separator"/>
+        android:color="@color/gray_solid_300"/>
 
 </shape>
