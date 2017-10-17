@@ -23,4 +23,5 @@
     <string name="done">done</string>
     <string name="title_must_be_filled">Judul harus diisi</string>
     <string name="description_must_be_filled">Deskripsi harus diisi</string>
+    <string name="reminder_from">Reminder from :</string>
 </resources>
