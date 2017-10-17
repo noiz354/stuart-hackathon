@@ -2,6 +2,7 @@ package com.stuart.hackatonproject.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -26,6 +28,7 @@ import com.stuart.hackatonproject.helper.LoginHelper;
 public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = HomeActivity.class.getSimpleName();
+    private static final int REQUEST_INVITE = 423;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -87,9 +90,22 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
             case R.id.menu_sign_out:
                 signOut();
                 return true;
+            case R.id.menu_invite:
+                inviteFriends();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void inviteFriends() {
+            Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.app_name))
+                    .setMessage(getString(R.string.invitation_message))
+                    .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                    .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                    .setCallToActionText(getString(R.string.app_name))
+                    .build();
+            startActivityForResult(intent, REQUEST_INVITE);
     }
 
     private void signOut() {
@@ -104,4 +120,5 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
             }
         });
     }
+
 }
