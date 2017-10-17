@@ -129,17 +129,6 @@ public class DetailReminderFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
-            if(requestCode == REQUEST_CODE_GET_LIST_FRIEND){
-                UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
-                friendTextList.setText(userDB.getName());
-            }
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         saveData();
@@ -234,6 +223,11 @@ public class DetailReminderFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND){
+            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOOSEN);
+            friendTextList.setText(userDB.getName());
+            return;
+        }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             if(imageToUploadUri != null){
                 Uri selectedImage = imageToUploadUri;
