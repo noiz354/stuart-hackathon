@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.perf.FirebasePerformance;
@@ -41,14 +41,18 @@ import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
+import com.stuart.hackatonproject.util.ImageUtils;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.stuart.hackatonproject.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -64,7 +68,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by nathan on 10/11/17.
  */
 @RuntimePermissions
-public class DetailReminderFragment extends Fragment {
+public class DetailReminderFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "DetailReminderFragment";
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
@@ -104,7 +108,7 @@ public class DetailReminderFragment extends Fragment {
             reminderDB = new ReminderDB();
             reminderDB.generateUniqueId(); // this generate id even not used
             isImageExists = false;
-        }else{
+        } else {
             isImageExists = true;
         }
         reminderDB.setFromUserId(FirebaseUtils.getCurrentUniqueUserId());
@@ -118,6 +122,28 @@ public class DetailReminderFragment extends Fragment {
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
+        reminderAtTextView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Calendar notifyAtCalendar = Calendar.getInstance();
+                if (reminderDB.getNotifyAt() <= 0) {
+                    reminderDB.setNotifyAt(System.currentTimeMillis());
+                    notifyAtCalendar.setTimeInMillis(reminderDB.getNotifyAt());
+                    notifyAtCalendar.add(Calendar.DATE, 1);
+                } else {
+                    notifyAtCalendar.setTimeInMillis(reminderDB.getNotifyAt());
+                }
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                        DetailReminderFragment.this,
+                        notifyAtCalendar.get(Calendar.YEAR),
+                        notifyAtCalendar.get(Calendar.MONTH),
+                        notifyAtCalendar.get(Calendar.DAY_OF_MONTH)
+                );
+                datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
+
+            }
+        });
         friendTextList = view.findViewById(R.id.content_text_view);
         contentLabelFriendList = view.findViewById(R.id.content_label_view);
         contentLabelFriendList.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +170,7 @@ public class DetailReminderFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_done :
+            case R.id.menu_done:
                 saveData();
                 return true;
         }
@@ -153,7 +179,7 @@ public class DetailReminderFragment extends Fragment {
 
     private void initImageDependencies() {
         StorageReference reference = storage.getReference();
-        for(int i =0;i<2;i++){
+        for (int i = 0; i < 2; i++) {
             String localFileName = String.format("real_image_%s_%d.jpg", reminderDB.getUniqueId(), i);
             reminderDB.put(i, localFileName);
 
@@ -168,15 +194,15 @@ public class DetailReminderFragment extends Fragment {
             titleTextView.setText(reminderDB.getTitle());
             contentTextView.setText(reminderDB.getContent());
 
-            for(int i=0;i<storageCompat.size();i++){
+            for (int i = 0; i < storageCompat.size(); i++) {
                 final int index = i;
                 storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         // Local temp file has been created
-                        Log.d(TAG, "sudah selesai download "+taskSnapshot.getBytesTransferred()+" !!!! ");
+                        Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
 
-                        switch (index){
+                        switch (index) {
                             case 0:
                                 Glide.with(DetailReminderFragment.this.getActivity())
                                         .asBitmap()
@@ -233,9 +259,9 @@ public class DetailReminderFragment extends Fragment {
         trace.stop();
     }
 
-    private void initImageUI(View view){
+    private void initImageUI(View view) {
         imageViewAttachment1 = view.findViewById(R.id.image_view_image_attachment_1);
-        imageViewAttachment2= view.findViewById(R.id.image_view_image_attachment_2);
+        imageViewAttachment2 = view.findViewById(R.id.image_view_image_attachment_2);
         imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -259,7 +285,7 @@ public class DetailReminderFragment extends Fragment {
     }
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void readAndWriteStorage(){
+    void readAndWriteStorage() {
         DetailReminderFragmentPermissionsDispatcher.showCameraWithPermissionCheck(DetailReminderFragment.this);
     }
 
@@ -268,7 +294,7 @@ public class DetailReminderFragment extends Fragment {
 
         Intent chooserIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         chooserIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        switch (imageSelection){
+        switch (imageSelection) {
             case 0:
             case 1:
                 currentImageFile = localImageLocation.get(imageSelection);
@@ -303,18 +329,18 @@ public class DetailReminderFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND) {
             UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOSEN);
             friendTextList.setText(userDB.getName());
             return;
         }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            if(imageToUploadUri != null){
+            if (imageToUploadUri != null) {
                 Uri selectedImage = imageToUploadUri;
                 getActivity().getContentResolver().notifyChange(selectedImage, null);
-                Bitmap reducedSizeBitmap = getBitmap(currentImageFile.getPath());
-                if(reducedSizeBitmap != null){
-                    switch (imageSelection){
+                Bitmap reducedSizeBitmap = ImageUtils.getBitmap(getActivity(), authority, currentImageFile.getPath());
+                if (reducedSizeBitmap != null) {
+                    switch (imageSelection) {
                         case 0:
                             imageViewAttachment1.setImageBitmap(reducedSizeBitmap);
                             break;
@@ -337,83 +363,53 @@ public class DetailReminderFragment extends Fragment {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                if(downloadUrl != null)
+                                if (downloadUrl != null)
                                     imagesLocations.add(downloadUrl.toString());
                             }
                         });
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                }else{
-                    Toast.makeText(getActivity(),"Error while capturing Image",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Error while capturing Image", Toast.LENGTH_LONG).show();
                 }
-            }else{
-                Toast.makeText(getActivity(),"Error while capturing Image", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private Bitmap getBitmap(String path) {
-        Uri uri = GenericFileProvider.getUriForFile(getContext(), authority, new File(path));
-        InputStream in = null;
-        try {
-            final int IMAGE_MAX_SIZE = 1200000; // 1.2MP
-            in = getActivity().getContentResolver().openInputStream(uri);
-
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(in, null, o);
-            in.close();
-
-
-            int scale = 1;
-            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
-                    IMAGE_MAX_SIZE) {
-                scale++;
-            }
-            Log.d("", "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
-
-            Bitmap b = null;
-            in = getActivity().getContentResolver().openInputStream(uri);
-            if (scale > 1) {
-                scale--;
-                // scale to max possible inSampleSize that still yields an image
-                // larger than target
-                o = new BitmapFactory.Options();
-                o.inSampleSize = scale;
-                b = BitmapFactory.decodeStream(in, null, o);
-
-                // resize to desired dimensions
-                int height = b.getHeight();
-                int width = b.getWidth();
-                Log.d("", "1th scale operation dimenions - width: " + width + ", height: " + height);
-
-                double y = Math.sqrt(IMAGE_MAX_SIZE
-                        / (((double) width) / height));
-                double x = (y / height) * width;
-
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
-                        (int) y, true);
-                b.recycle();
-                b = scaledBitmap;
-
-                System.gc();
             } else {
-                b = BitmapFactory.decodeStream(in);
+                Toast.makeText(getActivity(), "Error while capturing Image", Toast.LENGTH_LONG).show();
             }
-            in.close();
-
-            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " +
-                    b.getHeight());
-            return b;
-        } catch (IOException e) {
-            Log.e("", e.getMessage(), e);
-            return null;
         }
     }
+
 
     private void setAuthority() {
         authority = getContext().getApplicationContext().getPackageName() + ".util.GenericFileProvider";
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(reminderDB.getNotifyAt());
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DATE, dayOfMonth);
+        reminderDB.setNotifyAt(calendar.getTimeInMillis());
+        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+                DetailReminderFragment.this,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true);
+        timePickerDialog.show(getActivity().getFragmentManager(), "Timepickerdialog");
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(reminderDB.getNotifyAt());
+        calendar.set(Calendar.HOUR, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+        calendar.set(Calendar.MILLISECOND, 0);
+        reminderDB.setNotifyAt(calendar.getTimeInMillis());
+        String timeFormat = DateTimeUtils.formatTime(new Date(reminderDB.getNotifyAt()), true);
+        reminderAtTextView.setText(timeFormat);
     }
 }
