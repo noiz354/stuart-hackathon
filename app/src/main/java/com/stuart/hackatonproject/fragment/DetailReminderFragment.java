@@ -1,6 +1,7 @@
 package com.stuart.hackatonproject.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,7 +33,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.stuart.hackatonproject.R;
+import com.stuart.hackatonproject.activity.ListFriendsActivity;
 import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 
@@ -61,6 +64,7 @@ public class DetailReminderFragment extends Fragment {
 
     private static final String TAG = "DetailReminderFragment";
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
+    private static final int REQUEST_CODE_GET_LIST_FRIEND = 3;
     private static final int CAMERA_REQUEST = 192;
     private ImageView imageViewAttachment1, imageViewAttachment2;
     private Uri imageToUploadUri;
@@ -78,6 +82,9 @@ public class DetailReminderFragment extends Fragment {
     private ArrayList<String> imagesLocations = new ArrayList<>();
     private ArrayList<File> localImageLocation = new ArrayList<>();
     private SparseArrayCompat<StorageReference> storageCompat = new SparseArrayCompat<>();
+    private TextView friendTextList;
+    private View contentLabelFriendList;
+
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -105,6 +112,15 @@ public class DetailReminderFragment extends Fragment {
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
+        friendTextList = view.findViewById(R.id.content_text_view);
+        contentLabelFriendList = view.findViewById(R.id.content_label_view);
+        contentLabelFriendList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = ListFriendsActivity.createIntent(getActivity());
+                startActivityForResult(intent, REQUEST_CODE_GET_LIST_FRIEND);
+            }
+        });
         setAuthority();
         initImageUI(view);
         initImageDependencies();
