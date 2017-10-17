@@ -11,4 +11,7 @@
     <string name="label_description">Description</string>
     <string name="label_reminder_time">Reminder Time</string>
     <string name="web_client_id">706307912836-qflfis594n3d11gmmn1bal7m2sbhn695.apps.googleusercontent.com</string>
+    <string name="default_notification_channel_id" translatable="false">stuart_hackathon</string>
+    <string name="default_notification_channel_name" translatable="true">stuart_hackathon</string>
+    <string name="app_topics" translatable="false">stuart_hackathon</string>
 </resources>
