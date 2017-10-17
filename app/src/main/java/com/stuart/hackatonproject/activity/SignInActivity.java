@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
 import com.stuart.hackatonproject.helper.LoginHelper;
@@ -122,12 +124,21 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseMessaging.getInstance().subscribeToTopic(getString(R.string.app_topics));
+                FirebaseMessaging.getInstance().subscribeToTopic(LoginHelper.getAuth().getUid());
+
+                UserDB user;
+                dataSnapshot.child(FirebaseUtils.getCurrentUniqueUserId()).getValue(UserDB.class);
                 if (!dataSnapshot.hasChild(FirebaseUtils.getCurrentUniqueUserId())) {
-                    UserDB user = new UserDB();
-                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
-                    user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
-                    user.save();
+                    user = new UserDB();
+                } else {
+                    user = dataSnapshot.getValue(UserDB.class);
                 }
+                user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
+                user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
+                user.setuID(LoginHelper.getAuth().getUid());
+                user.setFcmToken(FirebaseInstanceId.getInstance().getToken());
+                user.save();
                 onSuccessLoginGoogle();
             }
 

@@ -22,10 +22,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
 import com.stuart.hackatonproject.fragment.SharedReminderFragment;
 import com.stuart.hackatonproject.helper.LoginHelper;
+import com.stuart.hackatonproject.util.FirebaseUtils;
 
 public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -129,6 +131,8 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
             public void onResult(@NonNull Status status) {
                 if (status.isSuccess()) {
                     // Firebase sign out
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(getString(R.string.app_topics));
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(LoginHelper.getAuth().getUid());
                     LoginHelper.signOut();
                     SignInActivity.startNewTask(HomeActivity.this);
                 }

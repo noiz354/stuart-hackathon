@@ -18,9 +18,10 @@ import com.stuart.hackatonproject.util.FirebaseUtils;
 public class UserDB implements Parcelable {
 
     public final static String TABLE_NAME = "user";
-    public String name;
-    public String email;
-
+    private String name;
+    private String email;
+    private String fcmToken;
+    private String uID;
 
     public String getName() {
         return name;
@@ -36,6 +37,22 @@ public class UserDB implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public String getuID() {
+        return uID;
+    }
+
+    public void setuID(String uID) {
+        this.uID = uID;
     }
 
     public UserDB() {
@@ -56,14 +73,18 @@ public class UserDB implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
         dest.writeString(this.email);
+        dest.writeString(this.fcmToken);
+        dest.writeString(this.uID);
     }
 
     protected UserDB(Parcel in) {
         this.name = in.readString();
         this.email = in.readString();
+        this.fcmToken = in.readString();
+        this.uID = in.readString();
     }
 
-    public static final Creator<UserDB> CREATOR = new Creator<UserDB>() {
+    public static final Parcelable.Creator<UserDB> CREATOR = new Parcelable.Creator<UserDB>() {
         @Override
         public UserDB createFromParcel(Parcel source) {
             return new UserDB(source);

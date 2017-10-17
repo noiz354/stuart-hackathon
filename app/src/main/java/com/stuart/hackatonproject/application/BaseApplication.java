@@ -50,7 +50,6 @@ public class BaseApplication extends MultiDexApplication {
             notificationManager.createNotificationChannel(new NotificationChannel(channelId,
                     channelName, NotificationManager.IMPORTANCE_LOW));
         }
-        FirebaseMessaging.getInstance().subscribeToTopic(getString(R.string.app_topics));
     }
 
     @Override

@@ -16,9 +16,9 @@ admin.initializeApp(functions.config().firebase)
 // Realtime Database under the path /messages/:pushId/original
 exports.addMessage = functions.https.onRequest((req, res) => {
   // Grab the text parameter.
-  const original = req.query.text;
+  const original = req.query.test;
   // Push the new message into the Realtime Database using the Firebase Admin SDK.
-  admin.database().ref('/messages').push({original: original}).then(snapshot => {
+  admin.database().ref('/messages').push({ululu: original}).then(snapshot => {
     // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
     res.redirect(303, snapshot.ref);
   });

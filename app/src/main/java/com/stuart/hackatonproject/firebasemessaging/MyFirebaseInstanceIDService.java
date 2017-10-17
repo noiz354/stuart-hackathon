@@ -18,8 +18,17 @@ package com.stuart.hackatonproject.firebasemessaging;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.stuart.hackatonproject.helper.LoginHelper;
+import com.stuart.hackatonproject.model.UserDB;
+import com.stuart.hackatonproject.util.FirebaseUtils;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
@@ -53,7 +62,13 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+    private void sendRegistrationToServer(final String token) {
+        if (LoginHelper.getAuth().getCurrentUser()== null) {
+            return;
+        }
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                .getReference(UserDB.TABLE_NAME)
+                .child(FirebaseUtils.getCurrentUniqueUserId());
+        databaseReference.setValue("fcmToken", token);
     }
 }
