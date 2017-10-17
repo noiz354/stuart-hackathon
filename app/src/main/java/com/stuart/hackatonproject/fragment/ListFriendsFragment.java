@@ -78,7 +78,7 @@ public class ListFriendsFragment extends Fragment {
             @Override
             public FriendsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new FriendsHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_reminder, parent, false));
+                        .inflate(R.layout.item_list_friends, parent, false));
             }
 
             @Override

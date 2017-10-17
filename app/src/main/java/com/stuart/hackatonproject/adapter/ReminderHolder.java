@@ -14,12 +14,14 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
     private TextView titleTextView;
     private TextView contentTextView;
     private TextView notifyTimeTextView;
+    private TextView reminderFrom;
 
     public ReminderHolder(View itemView) {
         super(itemView);
         titleTextView = itemView.findViewById(R.id.text_view_title);
         contentTextView = itemView.findViewById(R.id.text_view_content);
         notifyTimeTextView = itemView.findViewById(R.id.notify_text_view_time);
+        reminderFrom = itemView.findViewById(R.id.text_reminder_from);
     }
 
     public void bind(ReminderDB reminderDB) {
@@ -27,5 +29,6 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
         contentTextView.setText(reminderDB.getContent());
         String timeFormat = DateTimeUtils.formatTime(new Date(reminderDB.getNotifyAt()), true);
         notifyTimeTextView.setText(timeFormat);
+        reminderFrom.setText(reminderDB.getFromUserId());
     }
 }
