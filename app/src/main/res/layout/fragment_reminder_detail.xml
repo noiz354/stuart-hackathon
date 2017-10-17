@@ -10,7 +10,11 @@
         android:layout_height="match_parent"
         android:background="@color/gray_solid_100"
         android:orientation="vertical"
+        android:divider="@drawable/line_divider_medium"
+        android:showDividers="middle"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include layout="@layout/view_label_list_friends" />
 
         <FrameLayout style="@style/LabelLayout">
 
@@ -34,22 +38,26 @@
 
         <FrameLayout
             style="@style/LabelLayout"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_med">
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_description"
                 style="@style/TextInputLayout"
                 app:counterEnabled="true"
-                app:counterMaxLength="300">
+                app:counterMaxLength="300"
+                android:layout_marginBottom="-10dp"
+                android:layout_marginTop="-10dp">
 
                 <EditText
                     android:id="@+id/edit_text_content"
                     android:layout_width="match_parent"
-                    android:layout_height="130dp"
+                    android:layout_height="80dp"
                     android:hint="@string/label_description"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionNext"
+                    android:gravity="top"
                     android:inputType="textMultiLine"
+                    android:lines="2"
                     android:maxLength="300" />
 
             </android.support.design.widget.TextInputLayout>
@@ -64,8 +72,6 @@
             android:background="@color/hkWhite"
             android:hint="@string/label_reminder_time" />
 
-        <include layout="@layout/view_label_list_friends" />
-
         <LinearLayout
             style="@style/LabelLayout"
             android:orientation="vertical"
@@ -76,29 +82,40 @@
                 android:layout_marginBottom="@dimen/margin_med"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_10"
-                android:text="@string/label_image" />
+                android:text="@string/add_image"
+                android:textSize="@dimen/font_18"/>
 
             <LinearLayout
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/image_view_image_attachment_1"
-                    android:layout_width="@dimen/thumbnail_height"
-                    android:layout_height="@dimen/thumbnail_height"
-                    android:padding="@dimen/padding_4"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_add_product" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_stroke_gray">
+                    <ImageView
+                        android:id="@+id/image_view_image_attachment_1"
+                        android:layout_width="@dimen/thumbnail_height"
+                        android:layout_height="@dimen/thumbnail_height"
+                        android:padding="@dimen/padding_4"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_add_product_with_padding" />
+                </FrameLayout>
 
-                <ImageView
-                    android:id="@+id/image_view_image_attachment_2"
-                    android:layout_width="@dimen/thumbnail_height"
-                    android:layout_height="@dimen/thumbnail_height"
-                    android:padding="@dimen/padding_4"
-                    android:src="@drawable/ic_add_product" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_stroke_gray"
+                    android:layout_marginLeft="-1dp">
+                    <ImageView
+                        android:id="@+id/image_view_image_attachment_2"
+                        android:layout_width="@dimen/thumbnail_height"
+                        android:layout_height="@dimen/thumbnail_height"
+                        android:padding="@dimen/padding_4"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_add_product_with_padding" />
+                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
 

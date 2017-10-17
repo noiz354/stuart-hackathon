@@ -24,4 +24,6 @@
     <string name="title_must_be_filled">Judul harus diisi</string>
     <string name="description_must_be_filled">Deskripsi harus diisi</string>
     <string name="reminder_from">Reminder from :</string>
+    <string name="reminder_to">Who Friends to Remind?</string>
+    <string name="add_image">Add Reminder Picture</string>
 </resources>

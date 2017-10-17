@@ -332,6 +332,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND) {
             UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOSEN);
             friendTextList.setText(userDB.getName());
+            friendTextList.setVisibility(View.VISIBLE);
             return;
         }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
