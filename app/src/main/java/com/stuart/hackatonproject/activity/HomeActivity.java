@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,6 +29,8 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     private GoogleApiClient mGoogleApiClient;
 
+    private AdView mAdView;
+
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
         context.startActivity(intent);
@@ -41,11 +45,14 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_fragment);
+        setContentView(R.layout.activity_main);
         setUpGoogleApiClient();
         setUpToolbar();
         replaceFragment(new SharedReminderFragment(), false);
         Toast.makeText(this, "User login: " + LoginHelper.getAuth().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void setUpGoogleApiClient() {
