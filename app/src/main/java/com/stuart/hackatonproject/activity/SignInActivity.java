@@ -133,7 +133,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 if (!dataSnapshot.hasChild(FirebaseUtils.getCurrentUniqueUserId())) {
                     user = new UserDB();
                 } else {
-                    user = dataSnapshot.getValue(UserDB.class);
+                    user = dataSnapshot.child(FirebaseUtils.getCurrentUniqueUserId()).getValue(UserDB.class);
                 }
                 user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
                 user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
