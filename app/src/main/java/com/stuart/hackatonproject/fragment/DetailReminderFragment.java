@@ -194,7 +194,9 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         if (reminderDB != null) {
             titleTextView.setText(reminderDB.getTitle());
             contentTextView.setText(reminderDB.getContent());
-
+            if (reminderDB.getNotifyAt() > 0) {
+                reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
+            }
             for (int i = 0; i < storageCompat.size(); i++) {
                 final int index = i;
                 storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
