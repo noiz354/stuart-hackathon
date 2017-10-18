@@ -22,11 +22,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.stuart.hackatonproject.MyJobService;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.HomeActivity;
 import com.stuart.hackatonproject.activity.SplashActivity;
@@ -107,7 +116,43 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String createdBy = data.get("createdBy");
         String timestamp = data.get("timestamp");
         String description = data.get("description");
-        //TODO schedule notif with these data!
+
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        Bundle myExtrasBundle = new Bundle();
+        myExtrasBundle.putString("title", title);
+        myExtrasBundle.putString("createdBy", createdBy);
+        myExtrasBundle.putString("timestamp", timestamp);
+        myExtrasBundle.putString("description", description);
+        int diff = (int)(Long.parseLong(timestamp) - System.currentTimeMillis());
+        if (diff < 0 ){
+            diff = 0;
+        }
+        Job myJob = dispatcher.newJobBuilder()
+                // the JobService that will be called
+                .setService(MyJobService.class)
+                // uniquely identifies the job
+                .setTag("my-unique-tag")
+                // one-off job
+                .setRecurring(false)
+                // don't persist past a device reboot
+                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                // start between 0 and 60 seconds from now
+                .setTrigger(Trigger.executionWindow(0, 60))
+                // don't overwrite an existing job with the same tag
+                .setReplaceCurrent(false)
+                // retry with exponential backoff
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                // constraints that need to be satisfied for the job to run
+                .setConstraints(
+                        // only run on an unmetered network
+                        Constraint.ON_UNMETERED_NETWORK,
+                        // only run when the device is charging
+                        Constraint.DEVICE_CHARGING
+                )
+                .setExtras(myExtrasBundle)
+                .build();
+        dispatcher.schedule(myJob);
+
         Log.d(TAG, "Short lived task is done.");
     }
 
