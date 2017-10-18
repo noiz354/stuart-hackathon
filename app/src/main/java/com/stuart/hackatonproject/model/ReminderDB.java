@@ -24,14 +24,16 @@ public class ReminderDB implements Parcelable {
     public final static String FIELD_IMAGES = "images";
 
     private String fromUserId;
-    private String toUserId;
+
     private String title;
     private String content;
     private long createdAt;
     private long notifyAt;
     private String uniqueId;
     private Map<Integer, Object> imageIds = new HashMap<>();
-    private String imageOne, imageTwo;
+    private String imageOne;
+    private String imageTwo;
+    private boolean containRudeWord;
 
     public void put(Integer position, String fileName){
         imageIds.put(position, fileName);
@@ -39,16 +41,6 @@ public class ReminderDB implements Parcelable {
 
     public ReminderDB() {
 
-    }
-
-    public ReminderDB(ReminderDB other) {
-        this.fromUserId = other.fromUserId;
-        this.toUserId = other.toUserId;
-        this.title = other.title;
-        this.content = other.content;
-        this.createdAt = other.createdAt;
-        this.notifyAt = other.notifyAt;
-        this.uniqueId = other.uniqueId;
     }
 
     public String getImageOne() {
@@ -73,14 +65,6 @@ public class ReminderDB implements Parcelable {
 
     public void setFromUserId(String fromUserId) {
         this.fromUserId = fromUserId;
-    }
-
-    public String getToUserId() {
-        return toUserId;
-    }
-
-    public void setToUserId(String toUserId) {
-        this.toUserId = toUserId;
     }
 
     public String getTitle() {
@@ -131,6 +115,14 @@ public class ReminderDB implements Parcelable {
         this.uniqueId = uniqueId;
     }
 
+    public boolean isContainRudeWord() {
+        return containRudeWord;
+    }
+
+    public void setContainRudeWord(boolean containRudeWord) {
+        this.containRudeWord = containRudeWord;
+    }
+
     public void saveImage(){
         if(!imageIds.isEmpty()){
             if(imageIds.get(0) != null){
@@ -143,7 +135,7 @@ public class ReminderDB implements Parcelable {
         }
     }
 
-    public void save() {
+    public void save(String toUserId) {
         generateUniqueId();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME)
                 .child(toUserId).child(ReminderDB.FIELD_REMINDER_FROM);
@@ -157,6 +149,7 @@ public class ReminderDB implements Parcelable {
         }
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -165,22 +158,28 @@ public class ReminderDB implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.fromUserId);
-        dest.writeString(this.toUserId);
         dest.writeString(this.title);
         dest.writeString(this.content);
         dest.writeLong(this.createdAt);
         dest.writeLong(this.notifyAt);
         dest.writeString(this.uniqueId);
+        dest.writeInt(this.imageIds.size());
+        dest.writeString(this.imageOne);
+        dest.writeString(this.imageTwo);
+        dest.writeByte(this.containRudeWord ? (byte) 1 : (byte) 0);
     }
 
     protected ReminderDB(Parcel in) {
         this.fromUserId = in.readString();
-        this.toUserId = in.readString();
         this.title = in.readString();
         this.content = in.readString();
         this.createdAt = in.readLong();
         this.notifyAt = in.readLong();
         this.uniqueId = in.readString();
+        int imageIdsSize = in.readInt();
+        this.imageOne = in.readString();
+        this.imageTwo = in.readString();
+        this.containRudeWord = in.readByte() != 0;
     }
 
     public static final Creator<ReminderDB> CREATOR = new Creator<ReminderDB>() {

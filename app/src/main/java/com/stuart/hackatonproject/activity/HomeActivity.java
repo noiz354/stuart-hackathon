@@ -158,18 +158,23 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     }
 
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                if (status.isSuccess()) {
-                    // Firebase sign out
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(getString(R.string.app_topics));
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(LoginHelper.getAuth().getUid());
-                    LoginHelper.signOut();
-                    SignInActivity.startNewTask(HomeActivity.this);
+        if (!mGoogleApiClient.isConnected()) {
+            SignInActivity.startNewTask(HomeActivity.this);
+        } else {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    if (status.isSuccess()) {
+                        // Firebase sign out
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(getString(R.string.app_topics));
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(LoginHelper.getAuth().getUid());
+                        LoginHelper.signOut();
+                        SignInActivity.startNewTask(HomeActivity.this);
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
 }

@@ -7,14 +7,11 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.stuart.hackatonproject.BuildConfig;
 import com.stuart.hackatonproject.R;
-import com.stuart.hackatonproject.helper.LoginHelper;
 
 /**
  *
@@ -30,7 +27,7 @@ public class BaseApplication extends MultiDexApplication {
 
         mContext = getApplicationContext();
 
-        DateTimeUtils.setTimeZone("UTC");
+        initialFirebase();
     }
 
     private void initialFirebase() {

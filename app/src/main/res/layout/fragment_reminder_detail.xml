@@ -46,7 +46,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/label_title"
                         android:imeOptions="actionDone"
-                        android:inputType="text"
+                        android:inputType="textCapSentences"
                         android:maxLength="50" />
                 </android.support.design.widget.TextInputLayout>
             </FrameLayout>
@@ -71,7 +71,7 @@
                         android:gravity="top"
                         android:hint="@string/label_description"
                         android:imeOptions="actionNext"
-                        android:inputType="textMultiLine"
+                        android:inputType="textMultiLine|textCapSentences"
                         android:maxLines="5"
                         android:maxLength="300" />
 

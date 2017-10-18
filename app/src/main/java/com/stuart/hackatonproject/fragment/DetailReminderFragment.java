@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.perf.FirebasePerformance;
@@ -43,9 +42,9 @@ import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GeneralUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 import com.stuart.hackatonproject.util.ImageUtils;
+import com.stuart.hackatonproject.util.ToastUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-import com.stuart.hackatonproject.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +52,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -75,7 +73,6 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
     private static final int REQUEST_CODE_GET_LIST_FRIEND = 3;
     private static final int CAMERA_REQUEST = 192;
-    private ImageView imageViewAttachment1, imageViewAttachment2;
     private Uri imageToUploadUri;
     private String authority;
     File currentImageFile;
@@ -93,6 +90,8 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     private SparseArrayCompat<StorageReference> storageCompat = new SparseArrayCompat<>();
     private TextView friendTextList;
     private View contentLabelFriendList;
+    private ImageView imageViewAttachment1;
+    private ImageView imageViewAttachment2;
 
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -100,6 +99,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     private ReminderDB reminderDB;
     private int imageSelection = 0;
     private boolean isImageExists = false;
+    private ArrayList<UserDB> userDBArrayList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,7 +113,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         } else {
             isImageExists = true;
         }
-
+        userDBArrayList = new ArrayList<>();
         setHasOptionsMenu(true);
     }
 
@@ -154,18 +154,35 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
                 startActivityForResult(intent, REQUEST_CODE_GET_LIST_FRIEND);
             }
         });
+        imageViewAttachment1 = view.findViewById(R.id.image_view_image_attachment_1);
+        imageViewAttachment2 = view.findViewById(R.id.image_view_image_attachment_2);
+        imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageSelection = 0;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
+            }
+        });
+        imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageSelection = 1;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
+            }
+        });
         setAuthority();
-        initImageUI(view);
         initImageDependencies();
         loadData();
+        setEnabled();
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_done, menu);
-
+        if (isEnableEdit()) {
+            inflater.inflate(R.menu.menu_done, menu);
+        }
     }
 
     @Override
@@ -191,44 +208,61 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     }
 
     private void loadData() {
-        if (reminderDB != null) {
-            titleTextView.setText(reminderDB.getTitle());
-            contentTextView.setText(reminderDB.getContent());
-            if (reminderDB.getNotifyAt() > 0) {
-                reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
-            }
-            for (int i = 0; i < storageCompat.size(); i++) {
-                final int index = i;
-                storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
-
-                        switch (index) {
-                            case 0:
-                                Glide.with(DetailReminderFragment.this.getActivity())
-                                        .asBitmap()
-                                        .load(localImageLocation.get(index))
-                                        .into(imageViewAttachment1);
-                                break;
-                            default:
-                            case 1:
-                                Glide.with(DetailReminderFragment.this.getActivity())
-                                        .asBitmap()
-                                        .load(localImageLocation.get(index))
-                                        .into(imageViewAttachment2);
-                                break;
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-            }
+        if (reminderDB == null) {
+            return;
         }
+        titleTextView.setText(reminderDB.getTitle());
+        contentTextView.setText(reminderDB.getContent());
+        if (reminderDB.getNotifyAt() > 0) {
+            reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
+        }
+        for (int i = 0; i < storageCompat.size(); i++) {
+            final int index = i;
+            storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    // Local temp file has been created
+                    Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
+                    switch (index) {
+                        case 0:
+                            Glide.with(DetailReminderFragment.this.getActivity())
+                                    .asBitmap()
+                                    .load(localImageLocation.get(index))
+                                    .into(imageViewAttachment1);
+                            break;
+                        default:
+                        case 1:
+                            Glide.with(DetailReminderFragment.this.getActivity())
+                                    .asBitmap()
+                                    .load(localImageLocation.get(index))
+                                    .into(imageViewAttachment2);
+                            break;
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
+    }
+
+    private boolean isEnableEdit() {
+        boolean enableEdit = FirebaseUtils.getCurrentUniqueUserId().equalsIgnoreCase(reminderDB.getFromUserId());
+        return enableEdit;
+    }
+
+    private void setEnabled() {
+        titleTextView.setEnabled(isEnableEdit());
+        contentTextView.setEnabled(isEnableEdit());
+        reminderAtTextView.setEnabled(isEnableEdit());
+        contentLabelFriendList.setEnabled(isEnableEdit());
+        imageViewAttachment1.setEnabled(isEnableEdit());
+        imageViewAttachment2.setEnabled(isEnableEdit());
     }
 
     private void saveData() {
@@ -243,10 +277,22 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
             ToastUtil.showToast(getContext(), getString(R.string.description_must_be_filled));
             return;
         }
+        String reminderAtText = reminderAtTextView.getText().toString();
+        if (TextUtils.isEmpty(reminderAtText)) {
+            ToastUtil.showToast(getContext(), getString(R.string.reminder_time_must_be_filled));
+            return;
+        }
         reminderDB.setTitle(title);
         reminderDB.setContent(description);
         reminderDB.setCreatedAt(System.currentTimeMillis());
+        reminderDB.saveImage();
+
         List<String> toUserList = new ArrayList<>();
+        for (UserDB userDB : userDBArrayList) {
+            if (!FirebaseUtils.getUniqueUserId(userDB.getEmail()).equalsIgnoreCase(FirebaseUtils.getCurrentUniqueUserId())) {
+                toUserList.add(FirebaseUtils.getUniqueUserId(userDB.getEmail()));
+            }
+        }
         toUserList.add(FirebaseUtils.getCurrentUniqueUserId());
         for (String toUser : toUserList) {
             sendTo(toUser);
@@ -256,31 +302,11 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     }
 
     private void sendTo(String toUserId) {
-        reminderDB.setToUserId(toUserId);
         Trace trace = FirebasePerformance.getInstance().newTrace("trace_save_reminder");
         trace.start();
-        reminderDB.save();
+        reminderDB.save(toUserId);
         trace.incrementCounter("save_reminder_hit");
         trace.stop();
-    }
-
-    private void initImageUI(View view) {
-        imageViewAttachment1 = view.findViewById(R.id.image_view_image_attachment_1);
-        imageViewAttachment2 = view.findViewById(R.id.image_view_image_attachment_2);
-        imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageSelection = 0;
-                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
-            }
-        });
-        imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageSelection = 1;
-                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
-            }
-        });
     }
 
     @Override
@@ -335,9 +361,8 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GET_LIST_FRIEND) {
-            UserDB userDB = data.getParcelableExtra(ListFriendsFragment.EXTRA_USER_CHOSEN);
-            friendTextList.setText(userDB.getName());
-            friendTextList.setVisibility(View.VISIBLE);
+            ArrayList<UserDB> userDBArrayList = data.getParcelableArrayListExtra(ListFriendsFragment.EXTRA_USER_CHOSEN_LIST);
+            addFriend(userDBArrayList);
             return;
         }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
@@ -385,6 +410,22 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         }
     }
 
+    private void addFriend(ArrayList<UserDB> userDBArrayList) {
+        friendTextList.setVisibility(View.VISIBLE);
+        String friendListText = "";
+        for (int i = 0; i < userDBArrayList.size(); i++) {
+            UserDB userDB = userDBArrayList.get(i);
+            if (i != 0) {
+                friendListText += ",";
+            }
+            friendListText += userDB.getName();
+        }
+        if (TextUtils.isEmpty(friendListText)) {
+            friendTextList.setVisibility(View.GONE);
+        }
+        friendTextList.setText(friendListText);
+        this.userDBArrayList = userDBArrayList;
+    }
 
     private void setAuthority() {
         authority = getContext().getApplicationContext().getPackageName() + ".util.GenericFileProvider";
@@ -402,7 +443,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
                 DetailReminderFragment.this,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
-                true);
+                false);
         timePickerDialog.show(getActivity().getFragmentManager(), "Timepickerdialog");
     }
 

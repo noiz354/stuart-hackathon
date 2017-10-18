@@ -61,6 +61,9 @@ public class BaseActivity extends AppCompatActivity {
         }
         @ColorTypeDef int colorTheme = Integer.valueOf(firebaseRemoteConfig.getString(Constant.REMOTE_CONFIG_APP_COLOR_THEME));
         switch (colorTheme) {
+            case ColorTypeDef.BLUE:
+                setTheme(R.style.BlueAppTheme);
+                break;
             case ColorTypeDef.GREEN:
                 setTheme(R.style.GreenAppTheme);
                 break;

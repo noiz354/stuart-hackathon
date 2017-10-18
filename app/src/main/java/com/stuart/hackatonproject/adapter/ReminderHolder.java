@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.dynamiclinks.DynamicLink;
@@ -19,8 +19,6 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.util.GeneralUtils;
-
-import java.util.Date;
 
 public class ReminderHolder extends RecyclerView.ViewHolder {
     private TextView titleTextView;
@@ -69,5 +67,9 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
                 context.startActivity(sendIntent);
             }
         });
+        if (reminderDB.isContainRudeWord()) {
+            titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            contentTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
     }
 }
