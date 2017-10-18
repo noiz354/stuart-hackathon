@@ -8,8 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -19,21 +24,31 @@ import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.adapter.FriendsHolder;
 import com.stuart.hackatonproject.model.UserDB;
 
+import java.util.ArrayList;
+
 /**
  * Created by zulfikarrahman on 10/16/17.
  */
 
 public class ListFriendsFragment extends Fragment {
 
-    public static final String EXTRA_USER_CHOSEN = "extra_user_chosen";
+    public static final String EXTRA_USER_CHOSEN_LIST = "EXTRA_USER_CHOSEN_LIST";
     protected static final Query sChatQuery =
             FirebaseDatabase.getInstance().getReference().child(UserDB.TABLE_NAME)
                     .limitToLast(50);
 
     private RecyclerView recyclerView;
+    private ArrayList<UserDB> userDBList;
 
     public static ListFriendsFragment createInstance(){
         return new ListFriendsFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        userDBList = new ArrayList<>();
     }
 
     @Nullable
@@ -84,13 +99,15 @@ public class ListFriendsFragment extends Fragment {
             @Override
             protected void onBindViewHolder(FriendsHolder holder, int position, final UserDB userDB) {
                 holder.bind(userDB);
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                CheckBox checkBox = holder.itemView.findViewById(R.id.check_box);
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent();
-                        intent.putExtra(ListFriendsFragment.EXTRA_USER_CHOSEN, userDB);
-                        getActivity().setResult(Activity.RESULT_OK, intent);
-                        getActivity().finish();
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
+                        if (bool) {
+                            userDBList.add(userDB);
+                        } else {
+                            userDBList.remove(userDB);
+                        }
                     }
                 });
             }
@@ -101,5 +118,28 @@ public class ListFriendsFragment extends Fragment {
 //                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_list_friend, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_done:
+                sendSelectedUser();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void sendSelectedUser() {
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra(ListFriendsFragment.EXTRA_USER_CHOSEN_LIST, userDBList);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 }
