@@ -42,9 +42,9 @@ import com.stuart.hackatonproject.util.FirebaseUtils;
 import com.stuart.hackatonproject.util.GeneralUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 import com.stuart.hackatonproject.util.ImageUtils;
+import com.stuart.hackatonproject.util.ToastUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-import com.stuart.hackatonproject.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -428,7 +428,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
                 DetailReminderFragment.this,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
-                true);
+                false);
         timePickerDialog.show(getActivity().getFragmentManager(), "Timepickerdialog");
     }
 
