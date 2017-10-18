@@ -4,12 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.util.GeneralUtils;
-
-import java.util.Date;
 
 public class ReminderHolder extends RecyclerView.ViewHolder {
     private TextView titleTextView;
