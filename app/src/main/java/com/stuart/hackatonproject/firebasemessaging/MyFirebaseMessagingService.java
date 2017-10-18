@@ -132,23 +132,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setService(MyJobService.class)
                 // uniquely identifies the job
                 .setTag("my-unique-tag")
-                // one-off job
-                .setRecurring(false)
-                // don't persist past a device reboot
-                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
                 // start between 0 and 60 seconds from now
-                .setTrigger(Trigger.executionWindow(0, 60))
-                // don't overwrite an existing job with the same tag
-                .setReplaceCurrent(false)
-                // retry with exponential backoff
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
-                // constraints that need to be satisfied for the job to run
-                .setConstraints(
-                        // only run on an unmetered network
-                        Constraint.ON_UNMETERED_NETWORK,
-                        // only run when the device is charging
-                        Constraint.DEVICE_CHARGING
-                )
+                .setTrigger(Trigger.executionWindow(diff, diff+120))
                 .setExtras(myExtrasBundle)
                 .build();
         dispatcher.schedule(myJob);
