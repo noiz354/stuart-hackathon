@@ -25,13 +25,20 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.activity.base.BaseActivity;
+import com.stuart.hackatonproject.fragment.DetailReminderFragment;
 import com.stuart.hackatonproject.fragment.SharedReminderFragment;
 import com.stuart.hackatonproject.helper.LoginHelper;
+import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 
 public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -80,29 +87,29 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.OnConn
     }
 
     private void setDynamicLink() {
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-                            deepLink = pendingDynamicLinkData.getLink();
-                        }
+        Uri uri = getIntent().getData();
+        if(uri != null) {
+            String idReminder = uri.getQueryParameter("id");
+            FirebaseDatabase.getInstance().getReference().child(UserDB.TABLE_NAME)
+                    .child(FirebaseUtils.getCurrentUniqueUserId())
+                    .child(ReminderDB.FIELD_REMINDER_FROM)
+                    .child(idReminder)
+            .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ReminderDB reminderDB = dataSnapshot.getValue(ReminderDB.class);
+                    Intent intent = new Intent(HomeActivity.this, DetailActivity.class);
+                    intent.putExtra(DetailReminderFragment.EXTRA_REMINDER, reminderDB);
+                    startActivity(intent);
+                }
 
-                        if(deepLink != null) {
-                            String idReminder = deepLink.getQueryParameter("id");
-                        }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
+                }
+            });
+
+        }
     }
 
     @Override

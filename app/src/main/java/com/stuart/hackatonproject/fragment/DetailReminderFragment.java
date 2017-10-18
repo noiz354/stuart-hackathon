@@ -82,6 +82,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         return new DetailReminderFragment();
     }
 
+    private TextView reminderToTextView;
     private TextView titleTextView;
     private TextView contentTextView;
     private TextView reminderAtTextView;
@@ -120,6 +121,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reminder_detail, container, false);
+        reminderToTextView = view.findViewById(R.id.title_text_view);
         titleTextView = view.findViewById(R.id.edit_text_title);
         contentTextView = view.findViewById(R.id.edit_text_content);
         reminderAtTextView = view.findViewById(R.id.edit_text_reminder_at_time);
@@ -210,6 +212,9 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     private void loadData() {
         if (reminderDB == null) {
             return;
+        }
+        if (!isEnableEdit()) {
+            reminderToTextView.setText(getString(R.string.reminder_from) + " " + reminderDB.getFromUserId());
         }
         titleTextView.setText(reminderDB.getTitle());
         contentTextView.setText(reminderDB.getContent());
@@ -427,7 +432,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         for (int i = 0; i < userDBArrayList.size(); i++) {
             UserDB userDB = userDBArrayList.get(i);
             if (i != 0) {
-                friendListText += ",";
+                friendListText += ", ";
             }
             friendListText += userDB.getName();
         }
