@@ -67,9 +67,5 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
                 context.startActivity(sendIntent);
             }
         });
-        if (reminderDB.isContainRudeWord()) {
-            titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            contentTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
     }
 }

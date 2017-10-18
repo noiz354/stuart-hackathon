@@ -86,10 +86,10 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="https://cg47s.app.goo.gl/u9DC" android:scheme="https"/>
-                <data android:host="https://cg47s.app.goo.gl/u9DC" android:scheme="http"/>
-                <data android:host="https://cg47s.app.goo.gl/8KTE" android:scheme="https"/>
-                <data android:host="https://cg47s.app.goo.gl/8KTE" android:scheme="http"/>
+                <data android:host="cg47s.app.goo.gl/u9DC" android:scheme="https"/>
+                <data android:host="cg47s.app.goo.gl/u9DC" android:scheme="http"/>
+                <data android:host="cg47s.app.goo.gl/8KTE" android:scheme="https"/>
+                <data android:host="cg47s.app.goo.gl/8KTE" android:scheme="http"/>
                 <data
                     android:host="teamreminderstuart.com"
                     android:pathPattern="/detailReminder"
