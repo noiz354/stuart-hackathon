@@ -23,6 +23,7 @@
     <string name="done">done</string>
     <string name="title_must_be_filled">Title must be filled</string>
     <string name="description_must_be_filled">Description must be filled</string>
+    <string name="reminder_time_must_be_filled">Reminder time must be filled</string>
     <string name="reminder_from">Reminder from :</string>
     <string name="reminder_to">Who Friends to Remind?</string>
     <string name="add_image">Add Reminder Picture</string>

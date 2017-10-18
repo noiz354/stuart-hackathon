@@ -242,6 +242,11 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
             ToastUtil.showToast(getContext(), getString(R.string.description_must_be_filled));
             return;
         }
+        String reminderAtText = reminderAtTextView.getText().toString();
+        if (TextUtils.isEmpty(reminderAtText)) {
+            ToastUtil.showToast(getContext(), getString(R.string.reminder_time_must_be_filled));
+            return;
+        }
         reminderDB.setTitle(title);
         reminderDB.setContent(description);
         reminderDB.setCreatedAt(System.currentTimeMillis());
