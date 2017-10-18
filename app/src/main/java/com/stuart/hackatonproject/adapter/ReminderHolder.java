@@ -1,5 +1,6 @@
 package com.stuart.hackatonproject.adapter;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -27,5 +28,9 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
         contentTextView.setText(reminderDB.getContent());
         notifyTimeTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
         reminderFrom.setText(reminderDB.getFromUserId());
+        if (reminderDB.isContainRudeWord()) {
+            titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            contentTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
     }
 }
