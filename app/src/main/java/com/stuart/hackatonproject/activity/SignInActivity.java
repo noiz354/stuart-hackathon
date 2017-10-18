@@ -21,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -120,7 +121,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void updateUserDatabase() {
-        Query query = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME);
+        DatabaseReference query = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
