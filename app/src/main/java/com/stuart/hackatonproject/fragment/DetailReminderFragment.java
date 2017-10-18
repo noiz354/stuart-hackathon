@@ -223,29 +223,16 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         }
         for (int i = 0; i < storageCompat.size(); i++) {
             final int index = i;
+
+            if(localImageLocation.get(i).exists()){
+                loadLocalImages(null, i);
+                return;
+            }
+
             storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    // Local temp file has been created
-                    Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
-                    switch (index) {
-                        case 0:
-                            Glide.with(DetailReminderFragment.this.getActivity())
-                                    .asBitmap()
-                                    .load(localImageLocation.get(index))
-                                    .into(imageViewAttachment1);
-                            break;
-                        default:
-                        case 1:
-                            Glide.with(DetailReminderFragment.this.getActivity())
-                                    .asBitmap()
-                                    .load(localImageLocation.get(index))
-                                    .into(imageViewAttachment2);
-                            break;
-                    }
+                    loadLocalImages(taskSnapshot, index);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -253,6 +240,30 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
                     // Handle any errors
                 }
             });
+        }
+    }
+
+    private void loadLocalImages(@Nullable FileDownloadTask.TaskSnapshot taskSnapshot, int index) {
+        if (!isAdded()) {
+            return;
+        }
+        // Local temp file has been created
+        if(taskSnapshot != null)
+            Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
+        switch (index) {
+            case 0:
+                Glide.with(DetailReminderFragment.this.getActivity())
+                        .asBitmap()
+                        .load(localImageLocation.get(index))
+                        .into(imageViewAttachment1);
+                break;
+            default:
+            case 1:
+                Glide.with(DetailReminderFragment.this.getActivity())
+                        .asBitmap()
+                        .load(localImageLocation.get(index))
+                        .into(imageViewAttachment2);
+                break;
         }
     }
 
