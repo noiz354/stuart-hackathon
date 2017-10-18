@@ -95,17 +95,21 @@ exports.generateThumbnail = functions.storage.object()
     const title_ = reminderSnapshot.ref.child('title').once('value')
     const fromUserId_ = reminderSnapshot.ref.child('fromUserId').once('value')
     const createdAt_ = reminderSnapshot.ref.child('createdAt').once('value')
+    const description_ = reminderSnapshot.ref.child('content').once('value')
 
-    return Promise.all([title_, fromUserId_, createdAt_]).then(results => {
+    return Promise.all([title_, fromUserId_, createdAt_, description_]).then(results => {
 
       // Notification details.
     const payload = {
       data: {
-        konyol: 'dodol'
+        timestamp: `${results[2].val()}`,
+        createdBy: `${results[1].val()}`,
+        title: `${results[0].val()}`,
+        description: `${results[3].val()}`
       },
       notification: {
-        title: `${results[0].val()} wkwkwk`,
-        body: `${results[1].val()} is creating this for you. created at ${results[2].val()}`
+        title: `${results[0].val()}`,
+        body: `${results[1].val()} has created the reminder for you.`
       }
     };
 
