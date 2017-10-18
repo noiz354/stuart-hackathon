@@ -63,13 +63,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-//                scheduleJob(remoteMessage.getData());
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow(remoteMessage.getData());
-//            }
+            if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+                scheduleJob(remoteMessage.getData());
+            } else {
+                // Handle message within 10 seconds
+                handleNow(remoteMessage.getData());
+            }
 
         }
 
@@ -103,6 +103,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * Handle time allotted to BroadcastReceivers.
      */
     private void handleNow(Map<String, String> data) {
+        String title = data.get("title");
+        String createdBy = data.get("createdBy");
+        String timestampt = data.get("timestampt");
+        //TODO schedule notif with these data!
         Log.d(TAG, "Short lived task is done.");
     }
 
