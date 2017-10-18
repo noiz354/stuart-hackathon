@@ -132,14 +132,19 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 dataSnapshot.child(FirebaseUtils.getCurrentUniqueUserId()).getValue(UserDB.class);
                 if (!dataSnapshot.hasChild(FirebaseUtils.getCurrentUniqueUserId())) {
                     user = new UserDB();
+                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
+                    user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
+                    user.setuID(LoginHelper.getAuth().getUid());
+                    user.setFcmToken(FirebaseInstanceId.getInstance().getToken());
+                    user.save();
                 } else {
                     user = dataSnapshot.child(FirebaseUtils.getCurrentUniqueUserId()).getValue(UserDB.class);
+                    user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
+                    user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
+                    user.setuID(LoginHelper.getAuth().getUid());
+                    user.setFcmToken(FirebaseInstanceId.getInstance().getToken());
+                    user.update();
                 }
-                user.setEmail(LoginHelper.getAuth().getCurrentUser().getEmail());
-                user.setName(LoginHelper.getAuth().getCurrentUser().getDisplayName());
-                user.setuID(LoginHelper.getAuth().getUid());
-                user.setFcmToken(FirebaseInstanceId.getInstance().getToken());
-                user.save();
                 onSuccessLoginGoogle();
             }
 

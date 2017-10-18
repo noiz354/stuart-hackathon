@@ -11,6 +11,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.stuart.hackatonproject.helper.LoginHelper;
 import com.stuart.hackatonproject.util.FirebaseUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by nathan on 10/13/17.
  */
@@ -62,6 +65,17 @@ public class UserDB implements Parcelable {
     public void save() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME);
         databaseReference.child(FirebaseUtils.getUniqueUserId(email)).setValue(this);
+    }
+
+    public void update() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(UserDB.TABLE_NAME);
+        DatabaseReference dbRef = databaseReference.child(FirebaseUtils.getUniqueUserId(email));
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", this.email);
+        map.put("fcmToken", this.fcmToken);
+        map.put("name", this.name);
+        map.put("uID", this.uID);
+        dbRef.updateChildren(map);
     }
 
     @Override
