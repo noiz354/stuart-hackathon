@@ -250,6 +250,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         reminderDB.setTitle(title);
         reminderDB.setContent(description);
         reminderDB.setCreatedAt(System.currentTimeMillis());
+        reminderDB.saveImage();
 
         List<String> toUserList = new ArrayList<>();
         for (UserDB userDB : userDBArrayList) {
