@@ -33,6 +33,7 @@ public class ReminderDB implements Parcelable {
     private Map<Integer, Object> imageIds = new HashMap<>();
     private String imageOne;
     private String imageTwo;
+    private boolean containRudeWord;
 
     public void put(Integer position, String fileName){
         imageIds.put(position, fileName);
@@ -114,6 +115,14 @@ public class ReminderDB implements Parcelable {
         this.uniqueId = uniqueId;
     }
 
+    public boolean isContainRudeWord() {
+        return containRudeWord;
+    }
+
+    public void setContainRudeWord(boolean containRudeWord) {
+        this.containRudeWord = containRudeWord;
+    }
+
     public void saveImage(){
         if(!imageIds.isEmpty()){
             if(imageIds.get(0) != null){
@@ -140,6 +149,7 @@ public class ReminderDB implements Parcelable {
         }
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -156,6 +166,7 @@ public class ReminderDB implements Parcelable {
         dest.writeInt(this.imageIds.size());
         dest.writeString(this.imageOne);
         dest.writeString(this.imageTwo);
+        dest.writeByte(this.containRudeWord ? (byte) 1 : (byte) 0);
     }
 
     protected ReminderDB(Parcel in) {
@@ -168,6 +179,7 @@ public class ReminderDB implements Parcelable {
         int imageIdsSize = in.readInt();
         this.imageOne = in.readString();
         this.imageTwo = in.readString();
+        this.containRudeWord = in.readByte() != 0;
     }
 
     public static final Creator<ReminderDB> CREATOR = new Creator<ReminderDB>() {
