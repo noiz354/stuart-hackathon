@@ -24,6 +24,8 @@
         <item name="android:windowBackground">@color/hkWhite</item>
     </style>
 
+    <style name="BlueAppTheme" parent="AppTheme"/>
+
     <style name="GreenAppTheme" parent="AppTheme">
         <item name="colorPrimary">#27AE60</item>
         <item name="colorPrimaryDark">#1D8348</item>
