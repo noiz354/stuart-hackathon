@@ -221,6 +221,9 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
             storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    if (!isAdded()) {
+                        return;
+                    }
                     // Local temp file has been created
                     Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
                     switch (index) {
@@ -252,6 +255,7 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         boolean enableEdit = FirebaseUtils.getCurrentUniqueUserId().equalsIgnoreCase(reminderDB.getFromUserId());
         return enableEdit;
     }
+
     private void setEnabled() {
         titleTextView.setEnabled(isEnableEdit());
         contentTextView.setEnabled(isEnableEdit());
