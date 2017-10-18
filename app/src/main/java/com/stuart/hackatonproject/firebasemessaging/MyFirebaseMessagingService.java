@@ -105,7 +105,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleNow(Map<String, String> data) {
         String title = data.get("title");
         String createdBy = data.get("createdBy");
-        String timestampt = data.get("timestampt");
+        String timestamp = data.get("timestamp");
+        String description = data.get("description");
         //TODO schedule notif with these data!
         Log.d(TAG, "Short lived task is done.");
     }
