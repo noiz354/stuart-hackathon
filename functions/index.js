@@ -96,15 +96,18 @@ exports.generateThumbnail = functions.storage.object()
     const fromUserId_ = reminderSnapshot.ref.child('fromUserId').once('value')
     const createdAt_ = reminderSnapshot.ref.child('createdAt').once('value')
 
-    // Notification details.
+    return Promise.all([title_, fromUserId_, createdAt_]).then(results => {
+
+      // Notification details.
     const payload = {
+      data: {
+        konyol: 'dodol'
+      },
       notification: {
-        title: `${title_} wkwkwk`,
-        body: `${fromUserId_} is creating this for you. created at ${createdAt_}`
+        title: `${results[0].val()} wkwkwk`,
+        body: `${results[1].val()} is creating this for you. created at ${results[2].val()}`
       }
     };
-
-    return Promise.all([title_, fromUserId_, createdAt_]).then(results => {
 
         // Send notifications to all tokens.
       return admin.messaging().sendToDevice(deviceToken, payload).then(response => {
