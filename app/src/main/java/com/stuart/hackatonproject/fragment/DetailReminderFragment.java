@@ -40,6 +40,7 @@ import com.stuart.hackatonproject.activity.ListFriendsActivity;
 import com.stuart.hackatonproject.model.ReminderDB;
 import com.stuart.hackatonproject.model.UserDB;
 import com.stuart.hackatonproject.util.FirebaseUtils;
+import com.stuart.hackatonproject.util.GeneralUtils;
 import com.stuart.hackatonproject.util.GenericFileProvider;
 import com.stuart.hackatonproject.util.ImageUtils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -412,7 +413,6 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
         calendar.set(Calendar.SECOND, second);
         calendar.set(Calendar.MILLISECOND, 0);
         reminderDB.setNotifyAt(calendar.getTimeInMillis());
-        String timeFormat = DateTimeUtils.formatTime(new Date(reminderDB.getNotifyAt()), true);
-        reminderAtTextView.setText(timeFormat);
+        reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
     }
 }

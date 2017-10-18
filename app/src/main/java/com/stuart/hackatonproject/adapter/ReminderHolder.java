@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.github.thunder413.datetimeutils.DateTimeUtils;
 import com.stuart.hackatonproject.R;
 import com.stuart.hackatonproject.model.ReminderDB;
+import com.stuart.hackatonproject.util.GeneralUtils;
 
 import java.util.Date;
 
@@ -27,8 +28,7 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
     public void bind(ReminderDB reminderDB) {
         titleTextView.setText(reminderDB.getTitle());
         contentTextView.setText(reminderDB.getContent());
-        String timeFormat = DateTimeUtils.formatTime(new Date(reminderDB.getNotifyAt()), true);
-        notifyTimeTextView.setText(timeFormat);
+        notifyTimeTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
         reminderFrom.setText(reminderDB.getFromUserId());
     }
 }
