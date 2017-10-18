@@ -79,7 +79,7 @@ public class SharedReminderFragment extends Fragment {
             @Override
             public ReminderHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new ReminderHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_reminder, parent, false));
+                        .inflate(R.layout.item_reminder, parent, false), getActivity());
             }
 
             @Override
