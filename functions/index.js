@@ -75,9 +75,16 @@ exports.generateThumbnail = functions.storage.object()
     const reminderId = event.params.reminderId
     const reminderSnapshot = event.data
 
-    const deviceToken = event.data.ref.parent.parent.child('fcmToken').once('value')
+    var deviceToken = null;
 
     console.log('added ', reminderSnapshot.val())
+
+    event.data.ref.parent.parent.child('fcmToken').on('value', function(snapshot){
+      console.log('device token ',snapshot.val())
+      deviceToken = snapshot.val()
+    }, function(errorObject){
+      console.error("The read failed: " + errorObject.code)
+    })
 
     reminderSnapshot.ref.child('title').on('value', function(snapshot){
       console.log(snapshot.val())
@@ -92,17 +99,15 @@ exports.generateThumbnail = functions.storage.object()
     // Notification details.
     const payload = {
       notification: {
-        title: title_,
+        title: `${title_} wkwkwk`,
         body: `${fromUserId_} is creating this for you. created at ${createdAt_}`
       }
     };
 
-    // Listing all tokens.
-    const tokens = deviceToken;
+    return Promise.all([title_, fromUserId_, createdAt_]).then(results => {
 
-    return Promise.all([title_, fromUserId_, createdAt_, deviceToken]).then(results => {
         // Send notifications to all tokens.
-      return admin.messaging().sendToDevice(tokens, payload).then(response => {
+      return admin.messaging().sendToDevice(deviceToken, payload).then(response => {
         // For each message check if there was an error.
         const tokensToRemove = [];
         response.results.forEach((result, index) => {
@@ -117,6 +122,8 @@ exports.generateThumbnail = functions.storage.object()
           }
         });
         return Promise.all(tokensToRemove);
+      }).catch( er => {
+        console.error(er)
       })
     })
   })
