@@ -73,7 +73,6 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     public static final String EXTRA_REMINDER = "EXTRA_REMINDER";
     private static final int REQUEST_CODE_GET_LIST_FRIEND = 3;
     private static final int CAMERA_REQUEST = 192;
-    private ImageView imageViewAttachment1, imageViewAttachment2;
     private Uri imageToUploadUri;
     private String authority;
     File currentImageFile;
@@ -91,6 +90,8 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     private SparseArrayCompat<StorageReference> storageCompat = new SparseArrayCompat<>();
     private TextView friendTextList;
     private View contentLabelFriendList;
+    private ImageView imageViewAttachment1;
+    private ImageView imageViewAttachment2;
 
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -153,18 +154,35 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
                 startActivityForResult(intent, REQUEST_CODE_GET_LIST_FRIEND);
             }
         });
+        imageViewAttachment1 = view.findViewById(R.id.image_view_image_attachment_1);
+        imageViewAttachment2 = view.findViewById(R.id.image_view_image_attachment_2);
+        imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageSelection = 0;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
+            }
+        });
+        imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageSelection = 1;
+                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
+            }
+        });
         setAuthority();
-        initImageUI(view);
         initImageDependencies();
         loadData();
+        setEnabled();
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_done, menu);
-
+        if (isEnableEdit()) {
+            inflater.inflate(R.menu.menu_done, menu);
+        }
     }
 
     @Override
@@ -190,44 +208,57 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     }
 
     private void loadData() {
-        if (reminderDB != null) {
-            titleTextView.setText(reminderDB.getTitle());
-            contentTextView.setText(reminderDB.getContent());
-            if (reminderDB.getNotifyAt() > 0) {
-                reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
-            }
-            for (int i = 0; i < storageCompat.size(); i++) {
-                final int index = i;
-                storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
-
-                        switch (index) {
-                            case 0:
-                                Glide.with(DetailReminderFragment.this.getActivity())
-                                        .asBitmap()
-                                        .load(localImageLocation.get(index))
-                                        .into(imageViewAttachment1);
-                                break;
-                            default:
-                            case 1:
-                                Glide.with(DetailReminderFragment.this.getActivity())
-                                        .asBitmap()
-                                        .load(localImageLocation.get(index))
-                                        .into(imageViewAttachment2);
-                                break;
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-            }
+        if (reminderDB == null) {
+            return;
         }
+        titleTextView.setText(reminderDB.getTitle());
+        contentTextView.setText(reminderDB.getContent());
+        if (reminderDB.getNotifyAt() > 0) {
+            reminderAtTextView.setText(GeneralUtils.generateReadableTime(reminderDB.getNotifyAt()));
+        }
+        for (int i = 0; i < storageCompat.size(); i++) {
+            final int index = i;
+            storageCompat.get(i).getFile(localImageLocation.get(i)).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    // Local temp file has been created
+                    Log.d(TAG, "sudah selesai download " + taskSnapshot.getBytesTransferred() + " !!!! ");
+                    switch (index) {
+                        case 0:
+                            Glide.with(DetailReminderFragment.this.getActivity())
+                                    .asBitmap()
+                                    .load(localImageLocation.get(index))
+                                    .into(imageViewAttachment1);
+                            break;
+                        default:
+                        case 1:
+                            Glide.with(DetailReminderFragment.this.getActivity())
+                                    .asBitmap()
+                                    .load(localImageLocation.get(index))
+                                    .into(imageViewAttachment2);
+                            break;
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
+    }
+
+    private boolean isEnableEdit() {
+        boolean enableEdit = FirebaseUtils.getCurrentUniqueUserId().equalsIgnoreCase(reminderDB.getFromUserId());
+        return enableEdit;
+    }
+    private void setEnabled() {
+        titleTextView.setEnabled(isEnableEdit());
+        contentTextView.setEnabled(isEnableEdit());
+        reminderAtTextView.setEnabled(isEnableEdit());
+        contentLabelFriendList.setEnabled(isEnableEdit());
+        imageViewAttachment1.setEnabled(isEnableEdit());
+        imageViewAttachment2.setEnabled(isEnableEdit());
     }
 
     private void saveData() {
@@ -267,31 +298,11 @@ public class DetailReminderFragment extends Fragment implements DatePickerDialog
     }
 
     private void sendTo(String toUserId) {
-        reminderDB.setToUserId(toUserId);
         Trace trace = FirebasePerformance.getInstance().newTrace("trace_save_reminder");
         trace.start();
-        reminderDB.save();
+        reminderDB.save(toUserId);
         trace.incrementCounter("save_reminder_hit");
         trace.stop();
-    }
-
-    private void initImageUI(View view) {
-        imageViewAttachment1 = view.findViewById(R.id.image_view_image_attachment_1);
-        imageViewAttachment2 = view.findViewById(R.id.image_view_image_attachment_2);
-        imageViewAttachment1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageSelection = 0;
-                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
-            }
-        });
-        imageViewAttachment2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageSelection = 1;
-                DetailReminderFragmentPermissionsDispatcher.readAndWriteStorageWithPermissionCheck(DetailReminderFragment.this);
-            }
-        });
     }
 
     @Override
